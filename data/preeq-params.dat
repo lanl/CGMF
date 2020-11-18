@@ -1,0 +1,21 @@
+#-------------------------------------------------------------------------------
+#  CGMF-1.0
+#  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+#  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
+#-------------------------------------------------------------------------------
+# preequilibrium fractions calculated with CoH 3.5.3
+# the file has the following structure after the comment
+# lines that start with #:
+# Number of nuclei available
+# ZAID_target a0 e0 s f0
+# and the preequilibrium probability is given by
+# f_p=1./(1+exp((a0-incidentEnergy)/e0))+s*incidentEnergy+f0 (if f_p<0 then f_p=0)
+# initial parameterization: 11.913 12.948 -0.010696 -0.293
+7
+93237 11.913 12.948 -1.0675e-2 -0.293
+92233 11.913 12.948 -9.7461e-3 -0.296
+92234 11.913 12.948 -9.1679e-3 -0.295
+92235 11.913 12.948 -9.6218e-3 -0.294
+92238 11.913 12.948 -9.7463e-3 -0.292
+94239 11.913 12.948 -9.6401e-3 -0.294
+94241 11.913 12.948 -9.5544e-3 -0.293

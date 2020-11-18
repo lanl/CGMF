@@ -1,0 +1,25 @@
+#-------------------------------------------------------------------------------
+#  CGMF-1.0
+#  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+#  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
+#-------------------------------------------------------------------------------
+# Parameters to a fit of the angular distributions of pre-equilibrium neutrons
+# angular distributions calculated by T. Kawano with FKK angular distributions
+# fit by p0*sinh(cos(theta))+p1
+# p0 and p1 have the same form as a function of incident energy and target
+# excitation energy:
+# pi = a + b*Einc + c*Einc^2 + d*Einc^3
+# where a, b, c, d = u0 + u1*Eexc + u2*Eexc^2 + u3*Eexc^3 + u4*Eexc^4 + u5*Eexc^5
+# after the comments (lines starting with #), this file gives the 24 parameters 
+# for p0, followed by those for p1
+# there are 8 lines, the u values for a, b, c, d for p0 then the u values 
+# for a, b, c, d for p1
+#-------------------------------------------------------------------------------
+ 2.27554291e+00 -1.11511434e+00  1.88995865e-01 -3.28402201e-02  4.13735891e-03 -1.75903501e-04
+-3.12633022e-01  9.97041269e-02  9.66103676e-03 -1.95973335e-03 -1.46357562e-04  1.55435487e-05
+ 1.99321109e-02 -4.97819514e-03 -1.65647620e-03  3.81266892e-04 -1.45337363e-05 -2.46164195e-07
+-5.05858190e-04  1.54683639e-04  3.09568583e-05 -9.55871564e-06  5.47956806e-07 -4.02351241e-09
+ 2.20666902e+00 -6.58802394e-01 -4.83550509e-03 -9.36250726e-03  3.26825686e-03 -1.75721329e-04 
+-2.10487860e-01 -4.67615105e-02  6.67402375e-02 -9.68451678e-03  2.53355861e-04  9.36969802e-06
+ 1.38626853e-02  4.18467334e-03 -5.41586784e-03  9.25968964e-04 -4.55993276e-05  3.29557966e-07
+-4.24384780e-04 -3.82416130e-06  1.02533599e-04 -2.06128268e-05  1.21881207e-06 -1.75265557e-08

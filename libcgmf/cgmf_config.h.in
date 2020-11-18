@@ -1,0 +1,7 @@
+#ifndef __CGMF_CONFIG_H__
+#define __CGMF_CONFIG_H__
+
+#cmakedefine INSTALL_DATADIR "@INSTALL_DATADIR@"
+#cmakedefine BUILD_DATADIR "@BUILD_DATADIR@"
+
+#endif //__CGMF_CONFIG_H__

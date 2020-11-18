@@ -1,0 +1,201 @@
+#-------------------------------------------------------------------------------
+#  CGMF-1.0
+#  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+#  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
+#-------------------------------------------------------------------------------
+
+################################################################################
+# Listed are the TKE parameterizations for the pre-neutron emission <TKE>(En),
+# <TKE>(Ah), and s_TKE(Ah). There are 28 parameters needed for these three TKE
+# parameterizations. The first two in each are the Z and A of the compound
+# nucleus (-Z for spontaneous fission). The next 4 values are the values for the
+# two parametric functions comprising the <TKE>(En):
+#
+# <TKE>(En) = a + b*En	for En<=E0
+# <TKE>(En) = c + d*En	for En>=E0
+#
+# The 4 values are a, E0, b, and d. The parameter c is determined by continuity
+# at En = E0:
+#
+# c = a + (b-d)*En
+#
+# we note that b>=0 and d<=0 by definition. Thus, E0 is the neutron energy where
+# the <TKE> changes from a positive slope to a negative one, the inflection
+# point. One can simply scale the <TKE>(En) by adjusting the first parameter a.
+#
+# The next 11 values are for the pre-neutron mass-dependent <TKE>(Ah):
+#
+# <TKE>(Ah) = c_0 + c_1*(Ah-a0) + c_2*(Ah-a0)^2 + ... + c_8*(Ah-a0)^8	for A0/2 <= Ah <= A_max
+#
+# The first two are the a0 (mass at which we perform the power-law fit around)
+# and the A_max. Beyond A_max, <TKE>(Ah) = 140. This is meant to prevent CGMF
+# from sampling erroneous <TKE>(Ah) values if the power-law fit is not accurate
+# beyond a certain A_max. The next nine parameters are the c_i in ascending
+# order.
+#
+# The next 9 values are for the pre-neutron mass-dependent variance of the
+# <TKE>(Ah), s_TKE(Ah):
+#
+# s_TKE(Ah) = c_0 + c_1*(Ah-a0) + c_2*(Ah-a0)^2 + ... + c_8*(Ah-a0)^8	for A0/2 <= Ah <= A_max
+#
+# The order for these 11 parameters is the same as in <TKE>(Ah) above. Beyond
+# A_max, s_TKE(Ah) = 7.
+#
+# In CGMF, the <TKE>(Ah) is scaled such that <TKE>(En) = \Sum [ Y(A,En)*<TKE>(Ah) ].
+# The TKE for a particular fission event is sampled from a Gaussian with mean
+# <TKE>(Ah) and variance (sigma) equal to s_TKE(Ah). 
+################################################################################
+
+### U231(nf) - Inferred from 3rd chance fission
+# <TKE>(En) Guessed by 3rd chance fission comparison with nubar(En) from Manero 1972
+# <TKE>(Ah) U233(nf) below
+# s_TKE(Ah) U233(nf) below
+
+92232 171.23 0.75 0.5000 -0.4000 129.50 160.00 1.7856e+02 2.6447e-02 -1.0082e-01 4.1158e-03 -6.1962e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 125.00 155.00 8.6246e+00 -9.6981e-02 -6.2345e-03 1.9684e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### U232(nf) - Inferred from 2nd chance fission
+# <TKE>(En) Guessed by 2nd chance fission comparison with nubar(En) from Manero 1972
+# <TKE>(Ah) U233(nf) below
+# s_TKE(Ah) U233(nf) below
+
+92233 171.23 0.75 0.5000 -0.4500 129.50 160.00 1.7856e+02 2.6447e-02 -1.0082e-01 4.1158e-03 -6.1962e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 125.00 155.00 8.6246e+00 -9.6981e-02 -6.2345e-03 1.9684e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### U233(nf) - fits use global fitting to the following data sets
+# <TKE>(En) from Surin 1972, Kolosov 1972 and Sergachev 1973 (adjusted a->a-1.55 and E0->E0-0.4 and b->b*6.0 and c->c*2.2)
+# <TKE>(Ah) from Surin 1972 and Baba 1997
+# s_TKE(Ah) from Baba 1997 (scaled by 0.75)
+
+92234 170.65 0.60 0.6218 -0.0557 129.50 160.00 1.7856e+02 2.6447e-02 -1.0082e-01 4.1158e-03 -6.1962e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 125.00 155.00 8.6246e+00 -9.6981e-02 -6.2345e-03 1.9684e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### U234(nf) - fits use global fitting to the following data sets
+# <TKE>(En) from Al-Adili 2016 (adjusted a->a-0.11)
+# <TKE>(Ah) from Al-Adili 2016 (En = 0.35 MeV)
+# s_TKE(Ah) from Al-Adili 2016 (En = 0.35 MeV) (scaled by 0.82)
+
+92235 170.09 0.90 0.7559 -0.2371 130.00 165.00 1.7811e+02 -4.6732e-01 -7.1245e-02 3.8795e-03 -6.5033e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 126.00 165.00 7.5050e+00 1.7530e-01 -2.7636e-02 9.5005e-04 -1.0120e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### U235(nf) - fits use global fitting to the following data sets
+# <TKE>(En) from Vorobyeva 1974, Meadows 1982, Nishio 1995, and Duke 2014 (adjusted a->a+0.24 and E0->E0-0.25 and b->b*3.5 and d->d*0.6)
+# <TKE>(Ah) from Dyachenko 1969, Zakharova 1973, Simon 1990, Baba 1997, Zeynalov 2006
+# s_TKE(Ah) from Zakharova 1973 and Baba 1997 (scaled by 0.75)
+
+92236 171.74 0.75 0.7181 -0.0975 131.70 166.00 1.7838e+02 -3.8105e-01 -1.4501e-01 5.9204e-03 2.0923e-04 -1.6306e-05 2.4070e-07 0.0000e+00 0.0000e+00 125.75 163.00 9.3499e+00 -3.1996e-01 4.1924e-03 1.9662e-04 -4.1142e-06 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### U236(nf) - Inferred from 3rd chance fission
+# <TKE>(En) Guessed by 3rd chance fission comparison with Duke (2016)
+# <TKE>(Ah) from U238(nf) below
+# s_TKE(Ah) from U238(nf) below
+
+92237 171.45 0.25 0.2000 -0.2000 130.00 162.00 1.7774e+02 2.4323e-01 -1.5521e-01 4.0098e-03 1.7018e-04 -8.9348e-06 1.0190e-07 0.0000e+00 0.0000e+00 130.00 162.00 7.9858e+00 -2.0539e-02 -2.2611e-02 1.2051e-03 -1.6865e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### U237(nf) - Inferred from 2nd chance fission
+# <TKE>(En) Guessed by 2nd chance fission comparison with Duke (2016)
+# <TKE>(Ah) from U238(nf) below
+# s_TKE(Ah) from U238(nf) below
+
+92238 172.01 1.50 0.0900 -0.3000 130.00 162.00 1.7774e+02 2.4323e-01 -1.5521e-01 4.0098e-03 1.7018e-04 -8.9348e-06 1.0190e-07 0.0000e+00 0.0000e+00 130.00 162.00 7.9858e+00 -2.0539e-02 -2.2611e-02 1.2051e-03 -1.6865e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### U238(nf) - fits use global fitting to the following data sets
+# <TKE>(En) from Duke 2016 (adjusted a->a+1.01 and b->b*0.529 and d->d*0.81)
+# <TKE>(Ah) from Vives 2000 (En = 1.6 MeV)
+# s_TKE(Ah) from Vives 2000 (En = 1.6 MeV) (scaled by 0.75)
+
+92239 170.61 1.80 0.5643 -0.3309 130.00 162.00 1.7774e+02 2.4323e-01 -1.5521e-01 4.0098e-03 1.7018e-04 -8.9348e-06 1.0190e-07 0.0000e+00 0.0000e+00 130.00 162.00 7.9858e+00 -2.0539e-02 -2.2611e-02 1.2051e-03 -1.6865e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Np235(nf) - Inferred from 3rd chance fission
+# <TKE>(En) Guessed by 3rd chance fission comparison with Frehaut 1982
+# <TKE>(Ah) from Np237(nf) below
+# s_TKE(Ah) from Np237(nf) below
+
+93236 173.48 0.00 0.0000 -0.2800 131.00 162.00 1.8182e+02 5.9289e-02 -1.3891e-01 4.1959e-03 9.3329e-05 -6.0947e-06 7.0386e-08 0.0000e+00 0.0000e+00 125.00 162.00 8.9382e+00 -2.7880e-01 1.8835e-02 -7.3213e-04 9.2401e-06 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Np236(nf) - Inferred from 2nd chance fission
+# <TKE>(En) Guessed by 2nd chance fission comparison with Frehaut 1982
+# <TKE>(Ah) from Np237(nf) below
+# s_TKE(Ah) from Np237(nf) below
+
+93237 174.59 0.00 0.0000 -0.3000 131.00 162.00 1.8182e+02 5.9289e-02 -1.3891e-01 4.1959e-03 9.3329e-05 -6.0947e-06 7.0386e-08 0.0000e+00 0.0000e+00 125.00 162.00 8.9382e+00 -2.7880e-01 1.8835e-02 -7.3213e-04 9.2401e-06 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Np237(nf) - fits use global fitting to the following data sets
+# <TKE>(En) from Hambsch 2000 (adjusted a->a+0.89 and d->d*0.70)
+# <TKE>(Ah) from Hambsch 2000 (En = 0.5 MeV)
+# s_TKE(Ah) from Hambsch 2000 (En = 0.5 MeV) (scaled by 0.75)
+
+93238 174.84 0.50 0.4327 -0.3008 131.00 162.00 1.8182e+02 5.9289e-02 -1.3891e-01 4.1959e-03 9.3329e-05 -6.0947e-06 7.0386e-08 0.0000e+00 0.0000e+00 125.00 162.00 8.9382e+00 -2.7880e-01 1.8835e-02 -7.3213e-04 9.2401e-06 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu237(nf) - Inferred from 3rd chance fission
+# <TKE>(En) Guessed by 3rd chance fission comparison with Meierbachtol 2016 data
+# <TKE>(Ah) from Pu239(nf) below
+# s_TKE(Ah) from Pu240(sf) below
+
+94238 175.80 0.00 0.0000 -0.2200 131.49 170.00 1.8445e+02 -1.7386e-01 -9.4080e-02 3.7735e-03 -5.1130e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 128.00 159.00 7.5837e+00 1.0168e-01 -1.6588e-02 3.9178e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu238(sf) - fits use global fitting to the following data sets
+# <TKE>(En) from Wagemans 1989, Schillebeeckx 1992 and Dematte 1997 (adjusted a->a+0.21)
+# <TKE>(Ah) from Schillebeeckx 1992 and Dematte 1997
+# s_TKE(Ah) from Schillebeeckx 1992 (scaled by 0.78)
+
+-94238 176.98 0.00 0.0000 0.0000 132.00 161.00 1.8346e+02 -3.3357e-01 -8.0326e-02 2.3065e-03 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 126.00 165.00 7.5801e+00 1.0723e-02 -2.2267e-03 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu238(nf) - Inferred from 2nd chance fission
+# <TKE>(En) Guessed by 2nd chance fission comparison with Meierbachtol 2016 data
+# <TKE>(Ah) from Pu239(nf) below
+# s_TKE(Ah) from Pu240(sf) below
+
+94239 178.19 0.00 0.0000 -0.6000 131.49 170.00 1.8445e+02 -1.7386e-01 -9.4080e-02 3.7735e-03 -5.1130e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 128.00 159.00 7.5837e+00 1.0168e-01 -1.6588e-02 3.9178e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu239(nf) - fits use global fitting to the following data sets
+# <TKE>(En) from Akimov 1971, Vorobyeva 1974, and Meierbachtol 2016 (adjusted a->a+0.21)
+# <TKE>(Ah) from Surin 1972, Wagemans 1984, Nishio 1995, Tsuchiya 2000
+# s_TKE(Ah) from Pu240(sf) Schillebeeckx 1992 (scaled by 0.75)
+
+94240 178.21 0.00 0.0000 -0.3409 131.49 170.00 1.8445e+02 -1.7386e-01 -9.4080e-02 3.7735e-03 -5.1130e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 128.00 159.00 7.5837e+00 1.0168e-01 -1.6588e-02 3.9178e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu240(sf) - fits use global fitting to the following data sets
+# <TKE>(En) from Thierens 1981, Wagemans 1984, Schillebeeckx 1992 and Dematte 1997 (adjusted a->a-0.66)
+# <TKE>(Ah) from Wagemans 1984, Schillebeeckx 1992 and Dematte 1997
+# s_TKE(Ah) from Schillebeeckx 1992 (scaled by 0.75)
+
+-94240 178.34 0.00 0.0000 0.0000 132.33 160.00 1.8730e+02 -6.0069e-01 -1.1734e-01 6.3910e-03 -1.0890e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 128.00 159.00 7.5837e+00 1.0168e-01 -1.6588e-02 3.9178e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu240(nf) - Inferred from 2nd chance fission
+# <TKE>(En) Guessed by 2nd chance fission comparison with Frehaut 1974 data
+# <TKE>(Ah) from Pu241(nf) below
+# s_TKE(Ah) from Pu241(nf) below
+
+94241 179.30 0.00 0.0000 -0.7000 131.00 170.00 1.8625e+02 -1.3380e-01 -9.5119e-02 4.0649e-03 -5.8880e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 125.00 161.00 8.5257e+00 -1.1176e-01 -1.5774e-03 7.6790e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu241(nf) - fits use global fitting to the following data sets
+# <TKE>(En) from Vorobyeva 1974 (adjusted a->a-0.37 and c->c*1.2)
+# <TKE>(Ah) from Vorobyeva 1974 and Allaert 1982
+# s_TKE(Ah) from Neiler 1966 (scaled by 0.75)
+
+94242 178.63 0.00 0.0000 -0.3262 131.00 170.00 1.8625e+02 -1.3380e-01 -9.5119e-02 4.0649e-03 -5.8880e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 125.00 161.00 8.5257e+00 -1.1176e-01 -1.5774e-03 7.6790e-05 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu242(sf) - fits use global fitting to the following data sets
+# <TKE>(En) from Dyachenko 1974, Allaert 1982, Thierens 1984 and Dematte 1997 (adjusted a->a-1.17)
+# <TKE>(Ah) from Dyachenko 1974, Thierens 1984, Schillebeeckx 1992 and Dematte 1997
+# s_TKE(Ah) from Schillebeeckx 1992 (scaled by 0.795)
+
+-94242 180.25 0.00 0.0000 0.0000 132.25 162.00 1.8681e+02 -2.6699e-01 -1.2676e-01 4.6674e-03 5.4081e-08 -1.6585e-06 0.0000e+00 0.0000e+00 0.0000e+00 128.00 159.00 7.4942e+00 5.4724e-02 -1.1505e-02 2.4066e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Pu244(sf) - fits use global fitting to the following data sets
+# <TKE>(En) from Allaert 1982, Thierens 1983, and Dematte 1997 (adjusted a->a-0.70)
+# <TKE>(Ah) from Dematte 1997
+# s_TKE(Ah) from Pu242(sf) Schillebeeckx 1992 (scaled by 0.795)
+
+-94244 179.30 0.00 0.0000 0.0000 130.00 160.00 1.8482e+02 2.9648e-02 -7.1585e-02 -2.0294e-03 2.6480e-04 -5.3700e-06 0.0000e+00 0.0000e+00 0.0000e+00 128.00 159.00 7.4942e+00 5.4724e-02 -1.1505e-02 2.4066e-04 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Cf252(sf) - fits use global fitting to the following data sets
+# <TKE>(En) from Hambsch 1997 (adjusted a->a-0.12)
+# <TKE>(Ah) from Hambsch 1997
+# s_TKE(Ah) from Hambsch 1997 (scaled by 0.75)
+
+-98252 185.78 0.00 0.0000 0.0000 132.00 175.00 1.9300e+02 -2.5708e-01 -8.4267e-02 1.2334e-02 -9.6452e-04 3.5851e-05 -6.2031e-07 4.0317e-09 0.0000e+00 130.00 175.00 7.8346e+00 -2.9175e-02 -8.7503e-03 6.5582e-04 -1.5291e-05 1.1215e-07 0.0000e+00 0.0000e+00 0.0000e+00
+
+### Cf254(sf) - fits use global fitting to the following data sets
+# <TKE>(En) from Friedman 1963 corrected for <TKE>_post - <TKE>_pre from Cf252(sf) of Schmidt 1983 (adjusted a->a-3.09)
+# <TKE>(Ah) from Cf252(sf) Gook 2014
+# s_TKE(Ah) from Cf252(sf) Gook 2014 (scaled by 0.75)
+
+-98254 186.15 0.00 0.0000 0.0000 132.00 175.00 1.9300e+02 -2.5708e-01 -8.4267e-02 1.2334e-02 -9.6452e-04 3.5851e-05 -6.2031e-07 4.0317e-09 0.0000e+00 130.00 175.00 7.9913e+00 -2.9759e-02 -8.9253e-03 6.6893e-04 -1.5597e-05 1.1439e-07 0.0000e+00 0.0000e+00 0.0000e+00

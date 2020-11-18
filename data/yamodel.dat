@@ -1,0 +1,73 @@
+#-------------------------------------------------------------------------------
+#  CGMF-1.0
+#  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+#  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
+#-------------------------------------------------------------------------------
+#
+# Listed are the 3-Gaussian parameterization for the pre-neutron emission mass
+# yields Y(A) for several fission reactions. The first column is the ZAI of the
+# compound nucleus (-Z for spontaneous fission). The next 14 values are
+# the parameters needed for the 3-G fit. The 3-G fit is composed of 3 Gaussians,
+# two of which are flipped across the symmetric point (5 total Gaussians). Each
+# Gaussian requires a weight (w), mean (mu), and variance (sigma):
+#
+# G(A,E) = w(E)/sqrt(2*PI*sigma(E)^2) * (exp [-(A-mu(E))^2/(2*sigma(E)^2)])
+#
+# we note that the parameters also have an dependence on the incident neutron
+# energy (E):
+#
+# w(E) = 1/(1+exp[(E-w_a)/w_b])
+# mu(E) = mu_a + mu_b*E
+# sigma(E) = sigma_a + sigma_b*E
+#
+# The w_a, w_b, mu_a, mu_b, sigma_a, sigma_b, are the first 6 parameters for one
+# of the primary peaks. The next 6 are those parameters for the other primary
+# peak. The last 2 parameters are the sigma_a and sigma_b for the symmetric peak.
+# We note that the weight and mean of the symmetric peak are fixed by:
+# 
+# 2 = 2*w_1(E) + 2*w_2(E) + w_3(E)
+# mu_3(E) = A0/2
+#
+# where w_1(E) and w_2(E) are the weights for the two primary peaks and A0 is
+# the mass of the compound nucleus. 
+#
+################################################################################
+#
+# ZAIDcompound
+ 92234 -30.1611 19.5576 132.68 -0.03 3.6964 0.0000 -29.5244 -19.3867 140.31 -0.05 5.1072 0.0251 10.3022 0.0000 # [1,2]
+ 92235 -31.1992 30.0000 133.60 -0.02 3.7512 0.0823 -30.5784 -29.8655 141.12 -0.04 5.0365 0.1092 10.0108 0.1089 # [3]
+ 92236  -6.8560  6.0824 133.79 -0.28 3.0288 0.0000  -6.8637  -6.1438 140.97 -0.27 4.6942 0.1853  9.8854 0.0322 # [4-8]
+ 92239  -2.1678  5.0323 135.16 -0.09 3.3868 0.0142  -2.2241  -5.1629 142.20 -0.16 5.5624 0.1048 10.0092 0.0153 # [9]
+ 93238  -8.3300  6.6635 134.51 -0.06 3.3920 0.0000  -8.3384  -6.6702 140.68 -0.02 5.8149 0.1402 10.0533 0.0121 # [10]
+-94238  -1.0000  0.6235 133.07  0.00 2.5946 0.0000  -1.0000  -0.7886 140.82  0.00 5.0208 0.0000 15.0000 0.0000 # [11,12]
+ 94240 -25.3691 29.9818 135.11  0.13 3.8465 0.0689 -25.2587 -30.0000 141.35  0.20 6.5176 0.0324  9.9823 0.0580 # [11,13-17]
+-94240  -1.0000  1.2079 134.50  0.00 2.8655 0.0000  -1.0000  -1.2079 140.60  0.00 5.6600 0.0000 10.0144 0.0000 # [11,12,15]
+ 94242 -20.9501 29.9818 135.64  0.13 4.0011 0.0689 -20.7638 -30.0000 141.38  0.20 6.4726 0.0324 10.1496 0.0580 # [18,19] energy dependence based on Pu239
+-94242  -1.0000  8.5751 134.82  0.00 3.1088 0.0000  -1.0000  -9.2722 140.50  0.00 5.4829 0.0000 10.1179 0.0000 # [11,12,19,20]
+-94244  -1.0000 -3.1569 135.20  0.00 3.7765 0.0000  -1.0000   3.1569 142.47  0.00 5.4745 0.0000 10.0300 0.0000 # [12]
+-98252  -1.0000 -1.6706 141.78  0.00 5.7679 0.0000  -1.0000   1.6706 146.26  0.00 7.9062 0.0000 10.0496 0.0000 # [21]
+-98254  -1.0000 -1.1540 143.16  0.00 5.9140 0.0000  -1.0000   1.1221 147.20  0.00 8.3156 0.0000 10.0618 0.0000 # [22] with an applied shift inferred from ratio of Cf253(nf)/Cf251(nf) via DRW calculation
+
+
+#  [1] Surin, 1972
+#  [2] Baba, 1997
+#  [3] Al-Adili, 2016
+#  [4] Dyachenko, 1969
+#  [5] Straede, 1987
+#  [6] Simon, 1990
+#  [7] Baba, 1997
+#  [8] Zeynalov, 2006 
+#  [9] Vives, 2000
+# [10] Hambsch, 2000
+# [11] Schillebeeckx, 1992
+# [12] Dematte, 1997
+# [13] Akimov, 1971
+# [14] Surin, 1972
+# [15] Wagemans, 1984
+# [16] Nishio, 1995
+# [17] Tsuchiya, 2000
+# [18] Vorobyeva, 1974
+# [19] Thierens, 1984
+# [20] Dyachenko, 1974
+# [21] Hambsch, 1997
+# [22] Gook, 2014
