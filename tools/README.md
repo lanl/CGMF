@@ -22,7 +22,7 @@ b) Type: python setup.py install
 
 It is recommended that python3 is used both for installation via pip (pip3) or the setup.py file.
 
-From the pip installation, the two classes, CGMFtk.histories() and CGMFtk.yields() should be available anywhere on your system.  If this is not the case (and for the installation from the setup file), before importing the modules use:
+From the pip installation, the two classes, CGMFtk.histories.Histories() and CGMFtk.yields.Yields() should be available anywhere on your system.  If this is not the case (and for the installation from the setup file), before importing the modules use:
    > import sys
    > import site
    > sys.path.append(site.USER_SITE+'/CGMFtk/')

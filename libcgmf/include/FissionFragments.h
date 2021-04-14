@@ -68,8 +68,11 @@ static double anisotropy[MAX_ZAIDc+1][NUM_EGRID+1] = {{1.0}};
 static double Pcostheta[THETA_STEPS][2];
 
 // Spin scaling (alpha) dependence on En
-#define ALPHA_MAX_ZAIDc 11
+#define ALPHA_MAX_ZAIDc 15
 static double alpha_coefficients[ALPHA_MAX_ZAIDc][3];
+
+// Multi-chance fission probabilities
+//static double multiChanceFissionProbabilities [MAX_ZAIDc][5][41]; // ZAID, 1st, 2nd, 3rd, 4h chance probabilities as a function of energy
 
 // Preequilibrium fit parameters for inelastic scattering distributions
 static double preeqScatteringParams[2][4][6];

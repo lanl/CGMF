@@ -215,8 +215,7 @@ void boost (double fragmentMomentum[3], int Zf, int Af,
         
     //		if (index!=0) cmTheta=PI-cmTheta;
     b = pf/Mf; // why is this not outside?
-    g = 1./sqrt(1.0-b*b);
-    Egl= g*Eg*(1.0-b*cos(cmTheta)); // Doppler shift
+    Egl= Eg*sqrt(1.0-b*b)/(1.0-b*cos(cmTheta)); // Doppler shift
     
     // Boost photon in c.m. of fragment --> lab
     

@@ -50,7 +50,7 @@ class Yields:
 			if (nevents is not None):
 				sys.exit('nevents must be a number')
                 
-		self.yields = self.readYieldFileFromCGMF(filename,nevents)
+		self.yields = self._readYieldFileFromCGMF(filename,nevents)
 
 		self.numberFragments = len(self.yields)
 		self.numberEvents = int(self.numberFragments/2)
@@ -104,7 +104,7 @@ class Yields:
 	# read yield file from CGMF					#
 	#################################################################
 
-	def readYieldFileFromCGMF (self, filename, nevents=None):
+	def _readYieldFileFromCGMF (self, filename, nevents=None):
 		"""Reads the CGMF history file (filename) and returns a list of the yield characteristics"""
 
 		f = open (filename)

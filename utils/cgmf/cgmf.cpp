@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     for (int i=0; i<nevents; i++) {
       rng.set_seed(i+ip*nevents+startingEvent);
       set_rng(rng);
-//      if (i>9 and i%(nevents/10)==0 and ip==0) cout << float(i)/float(nevents)*100.0 << "%\n";
+      if (nevents>=1000 and (i+1)%(nevents/100)==0 and ip==0) printf("%5.2f%%\n",float(i+1)/float(nevents)*100.0);
       if (event != 0) delete event;
       event = new cgmfEvent(ZAIDt, incidentEnergy, 0.0, timeCoincidenceWindow);
       recordEvent (event);

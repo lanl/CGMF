@@ -485,6 +485,13 @@ cgmfEvent::cgmfEvent  (int isotope, double eng, double time, double timew) : cgm
 }
 
 cgmfEvent::~cgmfEvent () {
+  if (preFissionNeutronNu>0) {
+    delete [] preFissionNeutronEnergies;
+    delete [] preFissionNeutronDircosu;
+    delete [] preFissionNeutronDircosv;
+    delete [] preFissionNeutronDircosw;
+    delete [] preFissionNeutronAges;
+  }
   return;
 }
 /*****************************************************************
