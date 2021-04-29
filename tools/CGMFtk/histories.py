@@ -52,7 +52,7 @@ class Histories:
 
 			
 		# read the history file	
-		self.histories = self.readHistoryFileFromCGMF (filename,nevents)
+		self.histories = self._readHistoryFileFromCGMF (filename,nevents)
 
 		self.numberFragments = len(self.histories)
 		self.numberEvents = int(self.numberFragments/2)
@@ -153,8 +153,8 @@ class Histories:
 		self.KEh = self.KEpre[1::2]
 
 
-	def readHistoryFileFromCGMF (self,filename,nevents):
-		"""! Reads CGMF history file (filename) and returns a list of simulations """
+	def _readHistoryFileFromCGMF (self,filename,nevents):
+		""" Reads CGMF history file (filename) and returns a list of simulations """
 
 		f = open (filename)
 
@@ -609,8 +609,11 @@ class Histories:
 		"""Returns the average gamma multiplicity, per fission fragment
 
 		timeWindow - logical, if included, returns the multiplicity as a function of time
+		
 		OR
+		
 		timeWindow - numpy array or list of times at which to calculate the average gamma multiplicity, s
+
 		Eth - lower threshold for gamma energy, MeV
 		"""
 
@@ -650,8 +653,11 @@ class Histories:
 		"""Returns the average gamma multiplicity, per fission event
 
 		timeWindow - logical, if included, returns the multiplicity as a function of time
+		
 		OR
+		
 		timeWindow - numpy array or list of times at which to calculate the average gamma multiplicity, s
+
 		Eth - lower threshold for gamma energies, MeV
 		"""
 
@@ -839,7 +845,7 @@ class Histories:
 	#-- quantities as a function of the fragment mass		#
 	#################################################################
 
-	def qA (self, dummy, quantity):
+	def _qA (self, dummy, quantity):
 		"""Returns two arrays, for the fragment mass and the quantity of interest
 		
 		quantity -- observable of interest as a function of mass, currently supported:
@@ -876,29 +882,29 @@ class Histories:
 
 	def nubarA (self):
 		"""Returns a two-dimensional array for neutron multiplicity as a function of A of format [A,nu]"""
-		return (self.qA(self,'nuA'))
+		return (self._qA(self,'nuA'))
 	
 	def nubargA (self):
 		"""Returns a two-dimensional array for gamma multiplicity as a function of A of format [A,nug]"""
-		return (self.qA(self, 'nugA'))
+		return (self._qA(self, 'nugA'))
 	
 	def UA (self):
 		"""Returns a two-dimensional array for excitation energy as a function of A of format [A,U]"""
-		return (self.qA(self, 'UA'))
+		return (self._qA(self, 'UA'))
 	
 	def TKEA (self):
 		"""Returns a two-dimensional array for total kinetic energy as a function of A of format [A,TKE]"""
-		return (self.qA(self, 'TKEA'))
+		return (self._qA(self, 'TKEA'))
 	
 	def spinA (self):
 		"""Returns a two-dimensional array for spin as a function of A of format [A,J]"""
-		return (self.qA(self, 'spinA'))
+		return (self._qA(self, 'spinA'))
 
 	#################################################################
 	#-- quantities as a function of TKE				#
 	#################################################################
 
-	def qTKE (self, dummy, quantity):
+	def _qTKE (self, dummy, quantity):
 		"""Returns two arrays, for the fission event total kinetic energy and the quantity of interest
 		
 		quantity -- observable of interest as a function of total kinetic energy, currently supported:
@@ -942,19 +948,19 @@ class Histories:
 
 	def nubarTKE (self):
 		"""Returns a two-dimensional array for total neutron multiplicity as a function of TKE of format [TKE,nu]"""
-		return (self.qTKE(self, 'nuTKE'))
+		return (self._qTKE(self, 'nuTKE'))
 
 	def nubargTKE (self):
 		"""Returns a two-dimensional array for total gamma multiplicity as a function of TKE of format [TKE,nug]"""
-		return (self.qTKE(self, 'nugTKE'))
+		return (self._qTKE(self, 'nugTKE'))
 
 	def UTKE (self):
 		"""Returns a two-dimensional array for excitation energy as a function of TKE of format [TKE,U]"""
-		return (self.qTKE(self, 'UTKE'))
+		return (self._qTKE(self, 'UTKE'))
 
 	def spinTKE (self):
 		"""Returns a two-dimensional array for excitation energy as a function of TKE of foramt [TKE,J]"""
-		return (self.qTKE(self, 'spinTKE'))
+		return (self._qTKE(self, 'spinTKE'))
 
 	#################################################################
 	#-- Average Prompt Fission Neutron Spectrum			#
@@ -991,6 +997,7 @@ class Histories:
 		"""Returns two arrays, one for the energy grid, and one for the corresponding prompt fission gamma spectrum
 		
 		Eth - optional gamma threshold energy, MeV
+
 		minTime/maxTime - optional lower/upper bound for the time window for the photon emission, s
 		"""
 		if (Eth is not None):
@@ -1056,7 +1063,9 @@ class Histories:
 		first for all neutrons, then from light fragments, then from heavy fragments
 
 		Eth - neutron threshold energy, MeV
+
 		lab - True: neutron energy in the lab frame (default), False: in cm
+
 		includePrefission - include (True, default) or don't include (False) pre-fission neutrons
 			only for the calculations in the lab frame
 		"""
@@ -1138,7 +1147,9 @@ class Histories:
 		"""Returns cos(theta) between the neutrons and the fragments
 
 		Eth - neutron threshold energy, MeV
+		
 		afterEmission - angles after neutron emission (True, default), before neutron emission (False)
+
 		includePrefission - include (True, default) or don't include (False) pre-fission neutrons
 			only for the calculations in the lab frame
 		"""
@@ -1239,6 +1250,7 @@ class Histories:
 		"""Returns an array of the cosine of the angle between each neutron pair of neutrons emitted from the same fragment, first for the light, then heavy, then all fragments
 
 		lab -- neutrons in the lab frame
+		
 		cm -- neutrons in the center of mass frame
 		"""
 		nLF = self.nuLF
@@ -1280,7 +1292,9 @@ class Histories:
 		"""Calculates the distribution of fission fragments (or products), given a gamma-ray energy and energy resolution
 
 		Egamma - array of gamma-ray energies (in lab frame) [MeV]
+		
 		dEgamma - array of gamma-ray energy resolutions [MeV]
+		
 		post - True (False) indicates that post- (pre-) neutron emission fission products (fragments) will be returned
 		"""
 
@@ -1338,9 +1352,13 @@ class Histories:
 		"""Returns the gamma-ray multiplicity as a function of time since the fission event for a specific isotope
 
 		Afragment - mass of a given isotope
+		
 		Zfragment - charge of a given isotope
+		
 		If both Afragment and Zfragment are given, the multiplicity is calculated for that isotope (default all isotopes)
+
 		Eth - threshold gamma-ray energy for the calculation, MeV
+
 		minTime/maxTime - define the window over which the number of gamma rays is counted, s
 		"""
 	
@@ -1401,9 +1419,13 @@ class Histories:
 		"""Calculates the isomeric ratio for the given state, relative to the ground state
 		
 		thresholdTime - time to separate isomeric state from ground state, s
+		
 		A - mass of fragment of interest
+		
 		Z - charge of fragment of interest
+		
 		Jm - spin of the isomeric state
+		
 		Jgs - spin of the ground state
 		"""
 		

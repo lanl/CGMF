@@ -4,7 +4,7 @@
 #  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 #-------------------------------------------------------------------------------
 # Listed are the spin-scaling parameterization for the J-distribution as a
-# function of incident neutron energy alpha(En). The first column is the ZAI
+# function of incident neutron energy alpha(En). The first column is the ZAID
 # of the compound nucleus (-Z for spontaneous fission). The next two values are
 # the constant alpha_0 and the slope alpha_slope forming the simple function:
 #
@@ -17,7 +17,7 @@
 # 
 #-------------------------------------------------------------------------------
 #
-# ZAI	alpha_0	alpha_slope
+# ZAID	alpha_0	alpha_slope
 
  92233 1.67 0.060 #  U232(nf) - inferred from Frehaut EgT(En) data for U235(nf) above 4th chance
  92234 1.68 0.055 #  U233(nf) - inferred from Frehaut EgT(En) data for U235(nf) above 3rd chance

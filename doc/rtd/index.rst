@@ -26,6 +26,7 @@ Contents
    Getting Started<start>
    Physics Models<models>
    Code Details<code>
+   Python Tools<tools>
    Example Jupyter Notebooks<examples_notebook>
    Publications<publications>
    License Agreement<license>

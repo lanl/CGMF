@@ -1,7 +1,7 @@
 CGMF, Cascading Gamma-ray Multiplicity and Fission
 ==================================================
 
-Updated on Oct. 13, 2020
+Updated on Apr. 29, 2021
 
 ---
 Authors
@@ -44,7 +44,7 @@ Documentation
 Version
 -------
 
-### Current Version 1.0
+### Current Version 1.0.1
 
 - Open source, BSD-3
 - Copyright: Triad National Security, LLC. All rights reserved.
@@ -70,14 +70,21 @@ Building, Testing and Installing Instructions
 5) Building: type `make` for default build
     * This creates the static library `libcgmf.a` in the build/libcgmf directory
     * This creates the executable `cgmf.x` in the build/utils/cgmf directory
-6) Testing: type `ctest` for default tests
-7) Example configuration in release mode with build, test and install:
-    * `cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -Dcgmf.x.MPI=ON ..`
-    * `make && ctest && make install`
-    * If the build and tests pass:
-        * This creates the static library `libcgmf.a` in the build directory
-        * This creates the executable `cgmf.mpi.x` in the build/utils/cgmf directory
-        * This installs bin, lib, data, and include directories into install directory
+6) Testing: type `make test` or `ctest` to run the default tests
+7) Installing: type `make install` to install CGMF
+    * This creates the following directory structure in the CMAKE_INSTALL_PREFIX directory:
+        * bin/ [contains cgmf executable]
+        * cgmf/data [contains cgmf data files]
+        * cgmf/include [contains cgmf header files]
+        * lib/ [contains libcgmf library]
+
+Example configuration in release mode with build, test and install:
+* `cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -Dcgmf.x.MPI=ON ..`
+* `make && ctest && make install`
+* If the build and tests pass:
+    * This creates the static library `libcgmf.a` in the build directory
+    * This creates the executable `cgmf.mpi.x` in the build/utils/cgmf directory
+    * This installs bin, lib, cgmf/data, and cgmf/include directories into install directory
 
 ---
 Execution Instructions and Options

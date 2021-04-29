@@ -4511,6 +4511,8 @@ void readSpinScaling(void) {
 
 	ifstream fp;
 	string str = SPINSCALINGFILE;
+  string line;
+  int NumReactions = 0;
 
 	// Try current directory
 	fp.open(&str[0]);
@@ -4520,49 +4522,15 @@ void readSpinScaling(void) {
 		str = datadir + str;
 		fp.open(&str[0]);
 	}
-
 	if (!fp) cgmTerminateCode("spin-scaling model file not found");
 
-	// Initialize the spin-scaling coefficients
-	for (int i=0;i<MAX_ZAIDc+1;i++) {
-		alpha_coefficients[i][0] = 0.;
-		alpha_coefficients[i][1] = 0.;
-		alpha_coefficients[i][2] = 0.;
-	}
+  while (getline(fp,line)) {
+    if (line[0]=='#' or line=="") continue;
+    istringstream(line) >> alpha_coefficients[NumReactions][0] >> alpha_coefficients[NumReactions][1] >> alpha_coefficients[NumReactions][2];
+    NumReactions++;
+    if (NumReactions>ALPHA_MAX_ZAIDc) cgmTerminateCode("Need to increase the size of alpha_coefficients array\n");
+  }
 
-	double zaid,alpha_0,alpha_slope;
-	int NumReactions = 0;
-
-	// Get the first line
-	getline(fp,str);
-	while(!fp.eof()) {
-		// Skip comment lines
-		if (str[0] == '#') {
-			getline(fp,str);
-			continue;
-		}
-
-		// Pull the line and determine the number of parameters listed
-		std::istringstream iss(str);
-		int Nparam = std::distance(std::istream_iterator<string>(iss),std::istream_iterator<string>());
-		if (Nparam!=3) {getline(fp,str); continue;} // Ignore any lines without the correct number of parameters
-
-		// Determine the ZAI of the compound nucleus
-		iss.str(str);
-		iss.clear();
-		iss >> zaid;
-		iss >> alpha_0;
-		iss >> alpha_slope;
-		if (NumReactions>ALPHA_MAX_ZAIDc) {
-			cout<<"Need to increase size of alpha_coefficients\n";
-			exit(0);
-		}
-		alpha_coefficients[NumReactions][0] = zaid;
-		alpha_coefficients[NumReactions][1] = alpha_0;
-		alpha_coefficients[NumReactions][2] = alpha_slope;
-		NumReactions++;
-		getline(fp,str);
-	}
 	return;
 }
 
@@ -5153,6 +5121,45 @@ void FissionFragments::constructYields(Yields *ffy) {
     return;
 }
 
+
+
+
+
+// void FissionFragments::readMultichanceFissionData(void) {
+
+//   ifstream fp;
+//   string str = MULTICHANCEFISSION;
+//   string line;
+
+//   int ZAID, ne, nn;
+
+//   // Try current directory
+//   fp.open(&str[0]);
+//   // Then system data area
+//   if (!fp) {
+//     str = datadir + str;
+//     fp.open(&str[0]);
+//   }
+//   if (!fp) cgmTerminateCode ("Multi-chance fission data file not found\n");
+
+//   int numZAID = 0;
+//   while (getline(fp,line)) {
+//     if (line[0]=="#" or line=="") continue;
+//     isstringstream(line) >> ZAID >> ne >> nn;
+
+
+
+
+//     numZAID++;
+//     if (numZAID>MAX_ZAIDc) cgmTerminateCode("Increase size of multi-chance fission array\n");
+//   }
+
+//   return;
+
+// }
+
+
+
 /*******************************************************************************
  * readMultichanceFissionData
  *------------------------------------------------------------------------------
@@ -5229,9 +5236,12 @@ void FissionFragments::readMultichanceFissionData(void) {
 
 	    }
 
+      // PT, April 2021: segmentation fault if nemit>=nn+1... simple FIX for now: replace <=nemit with <=min(nemit,nn)
+
 	    // Determine the maximum number of pre-fission neutrons
 	    int k = nn;
-	    for (int j=0;j<=nemit;j++) { // TODO: If "statTotalNeutrons" returns a value lower than that in the multi-chance file, we'll only use the "statTotalNeutrons" value.
+//      for (int j=0;j<=nemit;j++) { // TODO: If "statTotalNeutrons" returns a value lower than that in the multi-chance file, we'll only use the "statTotalNeutrons" value.
+      for (int j=0;j<=min(nemit,nn);j++) { // TODO: If "statTotalNeutrons" returns a value lower than that in the multi-chance file, we'll only use the "statTotalNeutrons" value.
 		if (emissprob[j]<=0.0) {
 		    k = j - 1;
 		    break;
@@ -5441,6 +5451,7 @@ void FissionFragments::getSpinScalingCoefficients(int ZAID_0, bool sf_flag, doub
 			break;
 		}
 	}
+
 	return;
 }
 
@@ -5474,12 +5485,6 @@ void FissionFragments::setSpinStrength(int ZAID_0, double einc) {
     } else {
 		alphaI = alpha_0 + alpha_slope*einc;
     }
-
-    // For debugging
-    // printf("-----\n");
-    // printf("Spin-scaling parameters:\n");
-    // printf("alphaI = %12.6e\n",alphaI);
-    // printf("-----\n");
 
     return;
 }
