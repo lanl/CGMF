@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -34,9 +34,9 @@ static inline double cgmGaussianBroadening (int, int, double, double *);
 /***********************************************************/
 void cgmGetSpectra(double de, double **spc)
 {
-  int    cm = 2, k0 = 0;
 
   mcl_nlines=0;
+  mcl_nlinesn=0;
 
   for(int k=0 ; k<=MAX_ENERGY_BIN-1 ; k++){
     double emin = (k>0)  ? ((double)k-0.5)*de : 0;
@@ -44,12 +44,18 @@ void cgmGetSpectra(double de, double **spc)
     double e    = (emin+emax)/2.0;
     double d    =  emax-emin;
 
-      for(int i=0 ; i<cm ; i++){
-	if (lowfilter(spc[i][k]) > 0.0) {
-          if(mcl_nlines < 30 ) mcl_glines[mcl_nlines] = (emin+emax)/2.0;
-          mcl_nlines++;
-        }
+    if (lowfilter(spc[0][k]) > 0.0) {
+      if(mcl_nlines < 30 ) {
+        mcl_glines[mcl_nlines] = (emin+emax)/2.0;
+        mcl_nlines++;
       }
+    }
+    if (lowfilter(spc[1][k]) > 0.0) {
+      if(mcl_nlinesn < 30 ) {
+        mcl_elinesn[mcl_nlinesn] = (emin+emax)/2.0;
+        mcl_nlinesn++;
+      }
+    }
   }
 }
 

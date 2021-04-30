@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -46,18 +46,7 @@ class UniformRNG{
 };
 
 
-std::function< double(void) > rng_cgm {}; 
-
-
-static void set_rng(std::function<double(void)> rng) {
-    rng_cgm = rng;
-}
-
-
-static void set_rng(double (*funcptr) (void)) {
-    rng_cgm = funcptr;
-}
-
+extern std::function< double(void) > rng_cgm; 
 
 
 #endif //__RNGCGM_H__

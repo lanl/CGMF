@@ -3,8 +3,8 @@
 # @mainpage CGMFtk class to read & analyze CGMF initial fission fragment yields
 #
 # -----------------------------------------------------------------------------
-#  CGMF-1.0
-#  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+#  CGMF-1.1
+#  Copyright TRIAD/LANL/DOE - see file LICENSE
 #  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 # -----------------------------------------------------------------------------
 #

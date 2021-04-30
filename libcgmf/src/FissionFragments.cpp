@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -45,6 +45,7 @@
 #include <sstream>
 #include <iterator>
 #include <functional>
+#include <algorithm>
 // To include with XML I/O
 //#include <libxml/xpath.h>
 //#include <libxml/xpathInternals.h>
@@ -62,14 +63,13 @@ using namespace std;
 #include "excinterface.h"
 #include "evapinterface.h"
 #include "terminate.h"
+#include "rngcgm.h"
 
 // from CGM
 #include "config.h"
 #include "cgm.h"
 #include "ripl2levels.h"
 //#include "global_var.h"
-
-extern std::function< double(void) > rng_cgm;
 
 // Default constructor
 FissionFragments::FissionFragments(void) { }
@@ -729,6 +729,7 @@ void FissionFragments::readLevelDensityTables (string datafile) {
 }
 // -----------------------------------------------------------------------------------------------------------------------------
 
+#ifdef DEVUTIL
 // TODO: REFORMAT LEVELDENSITIES TO BE A 1D ARRAY OF ZAID? WITH SOME MAPPING TO CONSERVE SPACE? SIMILAR TO readTemperatures. (P.J.)
 // -----------------------------------------------------------------------------------------------------------------------------
 /*******************************************************************************
@@ -788,6 +789,7 @@ void FissionFragments::computeLevelDensityTables() {
     return;   
 }
 // -----------------------------------------------------------------------------------------------------------------------------
+#endif
 
 // TODO: DO WE NEED THIS ANYMORE SINCE WE HAVE READLDP()? (P.J.)
 // -----------------------------------------------------------------------------------------------------------------------------
@@ -854,6 +856,7 @@ void FissionFragments::readLevelDensityParameterTables (string datafile) {
 }
 // -----------------------------------------------------------------------------------------------------------------------------
 
+#ifdef DEVUTIL
 // TODO: DO WE NEED THIS ANYMORE SINCE WE HAVE READLDP()? (P.J.)
 // -----------------------------------------------------------------------------------------------------------------------------
 /*******************************************************************************
@@ -913,6 +916,7 @@ void FissionFragments::computeLevelDensityParameterTables() {
     return;
 }
 // -----------------------------------------------------------------------------------------------------------------------------
+#endif
 
 /*******************************************************************************
  * computeEnergyFromMaxEntropy
@@ -1749,18 +1753,84 @@ void FissionFragments::readRTAh(int Zt, int At) {
 
     std::fill_n(RTAh,NUMA,1.0);
 
+    static double U233_RTAh [43] = { // Adjusted to fit Nishio, 1998
+	1.200, 1.200, 1.200, 1.200, 1.200, 1.200, 1.150, 1.150, 1.120, 1.120,
+	1.200, 1.180, 1.180, 1.180, 1.180, 1.170, 1.110, 1.050, 1.020, 1.100,
+	1.220, 1.230, 1.240, 1.240, 1.240, 1.240, 1.260, 1.280, 1.280, 1.240,
+	1.240, 1.220, 1.170, 1.160, 1.160, 1.160, 1.160, 1.160, 1.160, 1.160,
+	1.160, 1.160, 1.160};
+
+    static double U235_RTAh [49] = { // Adjusted to fit Vorobyev, 2010
+	1.000, 1.096, 1.191, 1.287, 1.382, 1.478, 1.574, 1.590, 1.588, 1.388,
+	1.307, 1.246, 1.195, 1.084, 1.052, 1.040, 1.047, 1.135, 1.183, 1.301,
+	1.278, 1.255, 1.281, 1.228, 1.225, 1.221, 1.218, 1.214, 1.321, 1.228,
+	1.204, 1.201, 1.197, 1.194, 1.191, 1.187, 1.184, 1.180, 1.177, 1.174,
+	1.170, 1.167, 1.163, 1.160, 1.157, 1.153, 1.150, 1.146, 1.143 };
+
+    static double U238_RTAh [49] = { // Old U235(nth,f) values copied for U238(n,f)
+	1.000, 1.096, 1.191, 1.287, 1.382, 1.478, 1.574, 1.669, 1.588, 1.508,
+	1.427, 1.346, 1.265, 1.184, 1.192, 1.200, 1.207, 1.215, 1.223, 1.231,
+	1.238, 1.235, 1.231, 1.228, 1.225, 1.221, 1.218, 1.214, 1.211, 1.208,
+	1.204, 1.201, 1.197, 1.194, 1.191, 1.187, 1.184, 1.180, 1.177, 1.174,
+	1.170, 1.167, 1.163, 1.160, 1.157, 1.153, 1.150, 1.146, 1.143 };
+         
+    static double Np237_RTAh [38] = { // Adjusted to fit Muller, 1981 (En = 0.8 MeV)
+	1.200, 1.190, 1.200, 1.210, 1.200, 1.200, 1.200, 1.210, 1.190, 1.200,
+	1.200, 1.200, 1.190, 1.180, 1.170, 1.170, 1.170, 1.180, 1.200, 1.200,
+	1.200, 1.200, 1.210, 1.200, 1.190, 1.200, 1.200, 1.210, 1.210, 1.200,
+	1.210, 1.220, 1.230, 1.230, 1.250, 1.260, 1.260, 1.260 };
+
+    static double Pu239_RTAh [51] = { // Adjusted to fit Apalin, 1965
+	1.000, 1.130, 1.120, 1.160, 1.140, 1.190, 1.225, 1.240, 1.330, 1.305,
+	1.260, 1.110, 1.105, 1.075, 1.020, 1.010, 1.000, 1.080, 1.100, 1.075,
+	1.065, 1.045, 1.030, 1.015, 1.005, 0.985, 0.955, 0.935, 0.910, 0.895,
+	0.875, 0.850, 0.825, 0.850, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830,
+	0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830,
+	0.830 };
+
+    static double Pu240_RTAh[51] = { // Adjusted by P. Jaffke to match Wahl nubar(A)
+	1.300, 1.250, 1.150, 1.120, 1.150, 1.200, 1.230, 1.270, 1.300, 1.310,
+	1.300, 1.270, 1.200, 1.100, 1.110, 1.270, 1.290, 1.300, 1.290, 1.280,
+	1.270, 1.240, 1.210, 1.210, 1.250, 1.280, 1.300, 1.320, 1.340, 1.350,
+	1.380, 1.400, 1.430, 1.450, 1.480, 1.480, 1.440, 1.400, 1.380, 1.350,
+	1.330, 1.300, 1.250, 1.100, 1.000, 0.980, 0.950, 0.900, 0.870, 0.850,
+	0.850};
+
+    static double Pu241_RTAh [51] = { // Adjusted by P. Jaffke to match Wahl nubar(A)
+	1.05 , 1.111, 1.164, 1.212, 1.252, 1.287, 1.316, 1.339, 1.357, 1.370,
+	1.378, 1.382, 1.381, 1.377, 1.369, 1.358, 1.344, 1.327, 1.307, 1.285,
+	1.262, 1.237, 1.21 , 1.182, 1.154, 1.125, 1.095, 1.066, 1.037, 1.009,
+	0.981, 0.955, 0.93 , 0.907, 0.885, 0.866, 0.85 , 0.836, 0.825, 0.818,
+	0.815, 0.815, 0.82 , 0.829, 0.843, 0.861, 0.886, 0.916, 0.951, 0.993,
+	1.041};
+
+    static double Pu242_RTAh [51] = { // Adjusted by P. Jaffke to match Wahl nubar(A)
+	1.128, 1.175, 1.217, 1.254, 1.286, 1.313, 1.335, 1.353, 1.367, 1.377,
+	1.384, 1.387, 1.386, 1.383, 1.377, 1.368, 1.357, 1.343, 1.328, 1.311,
+	1.292, 1.272, 1.251, 1.229, 1.206, 1.183, 1.16 , 1.136, 1.113, 1.09 ,
+	1.068, 1.046, 1.026, 1.007, 0.989, 0.973, 0.959, 0.947, 0.937, 0.93 ,
+	0.925, 0.924, 0.926, 0.931, 0.94 , 0.952, 0.969, 0.99 , 1.015, 1.045,
+	1.08 };
+
+    static double Cf252_RTAh [44] = { // Adjusted to fit Gook, 2014
+	1.000, 1.173, 1.346, 1.519, 1.692, 1.613, 1.534, 1.455, 1.376, 1.297,
+	1.307, 1.317, 1.328, 1.338, 1.348, 1.359, 1.328, 1.298, 1.267, 1.237,
+	1.196, 1.166, 1.146, 1.115, 1.085, 1.054, 1.051, 0.985, 0.980, 0.953,
+	0.977, 0.991, 0.996, 1.010, 1.024, 1.038, 1.029, 1.020, 1.011, 1.002,
+	0.993, 0.984, 0.975, 0.496 };
+
+    static double Cf254_RTAh [43] = { // Same as Cf252(sf) but shifted
+	1.173, 1.346, 1.519, 1.692, 1.613, 1.534, 1.455, 1.376, 1.297, 1.307,
+	1.317, 1.328, 1.338, 1.348, 1.359, 1.328, 1.298, 1.267, 1.237, 1.196,
+	1.166, 1.146, 1.115, 1.085, 1.054, 1.051, 0.985, 0.980, 0.953, 0.977,
+	0.991, 0.996, 1.010, 1.024, 1.038, 1.029, 1.020, 1.011, 1.002, 0.993,
+	0.984, 0.975, 0.496 };
+
     switch (zaidt) {
 
 	/* URANIUMS */
 	case 92233: // U233
 	    // from Ah=117 (sym) to Ah=159
-	    static double U233_RTAh [43] = { // Adjusted to fit Nishio, 1998
-		1.200, 1.200, 1.200, 1.200, 1.200, 1.200, 1.150, 1.150, 1.120, 1.120,
-		1.200, 1.180, 1.180, 1.180, 1.180, 1.170, 1.110, 1.050, 1.020, 1.100,
-		1.220, 1.230, 1.240, 1.240, 1.240, 1.240, 1.260, 1.280, 1.280, 1.240,
-		1.240, 1.220, 1.170, 1.160, 1.160, 1.160, 1.160, 1.160, 1.160, 1.160,
-		1.160, 1.160, 1.160};
-
 	    j = -1;
 	    for (int i=117; i<=159; i++) {
 		RTAh[i] = U233_RTAh[++j];
@@ -1769,13 +1839,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 
 	case 92235: // U235
 	    // from Ah=118 (sym) to Ah=166
-	    static double U235_RTAh [49] = { // Adjusted to fit Vorobyev, 2010
-		1.000, 1.096, 1.191, 1.287, 1.382, 1.478, 1.574, 1.590, 1.588, 1.388,
-		1.307, 1.246, 1.195, 1.084, 1.052, 1.040, 1.047, 1.135, 1.183, 1.301,
-		1.278, 1.255, 1.281, 1.228, 1.225, 1.221, 1.218, 1.214, 1.321, 1.228,
-		1.204, 1.201, 1.197, 1.194, 1.191, 1.187, 1.184, 1.180, 1.177, 1.174,
-		1.170, 1.167, 1.163, 1.160, 1.157, 1.153, 1.150, 1.146, 1.143 };
-
 	    j = -1;
 	    for (int i=118; i<=166; i++) {
 		RTAh[i] = U235_RTAh[++j];
@@ -1784,13 +1847,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 
 	case 92238: // U238
 	    // from Ah=119 (sym) to Ah=165
-	    static double U238_RTAh [49] = { // Old U235(nth,f) values copied for U238(n,f)
-		1.000, 1.096, 1.191, 1.287, 1.382, 1.478, 1.574, 1.669, 1.588, 1.508,
-		1.427, 1.346, 1.265, 1.184, 1.192, 1.200, 1.207, 1.215, 1.223, 1.231,
-		1.238, 1.235, 1.231, 1.228, 1.225, 1.221, 1.218, 1.214, 1.211, 1.208,
-		1.204, 1.201, 1.197, 1.194, 1.191, 1.187, 1.184, 1.180, 1.177, 1.174,
-		1.170, 1.167, 1.163, 1.160, 1.157, 1.153, 1.150, 1.146, 1.143 };
-         
 	    j = -1;
 	    for (int i=119; i<166; i++) {
 		RTAh[i] = U238_RTAh[++j];
@@ -1800,12 +1856,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 	/* NEPTUNIUMS */
 	case 93237: // Np237
 	    // from Ah=119 (sym) to Ah=156
-	    static double Np237_RTAh [38] = { // Adjusted to fit Muller, 1981 (En = 0.8 MeV)
-		1.200, 1.190, 1.200, 1.210, 1.200, 1.200, 1.200, 1.210, 1.190, 1.200,
-		1.200, 1.200, 1.190, 1.180, 1.170, 1.170, 1.170, 1.180, 1.200, 1.200,
-		1.200, 1.200, 1.210, 1.200, 1.190, 1.200, 1.200, 1.210, 1.210, 1.200,
-		1.210, 1.220, 1.230, 1.230, 1.250, 1.260, 1.260, 1.260 };
-
 	    j = -1;
 	    for (int i=119; i<=156; i++) {
 		RTAh[i] = Np237_RTAh[++j];
@@ -1815,14 +1865,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 	/* PLUTONIUMS */
 	case 94239: // Pu239
 	    // from Ah=120 (sym) to Ah=170
-	    static double Pu239_RTAh [51] = { // Adjusted to fit Apalin, 1965
-		1.000, 1.130, 1.120, 1.160, 1.140, 1.190, 1.225, 1.240, 1.330, 1.305,
-		1.260, 1.110, 1.105, 1.075, 1.020, 1.010, 1.000, 1.080, 1.100, 1.075,
-		1.065, 1.045, 1.030, 1.015, 1.005, 0.985, 0.955, 0.935, 0.910, 0.895,
-		0.875, 0.850, 0.825, 0.850, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830,
-		0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830, 0.830,
-		0.830 };
-
 	    j = -1;
 	    for (int i=120; i<=170; i++) {
 		RTAh[i] = Pu239_RTAh[++j];
@@ -1831,14 +1873,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 
 	case 94240: // Pu240
 	    // from Ah=120(sym) to Ah=170
-	    static double Pu240_RTAh[51] = { // Adjusted by P. Jaffke to match Wahl nubar(A)
-		1.300, 1.250, 1.150, 1.120, 1.150, 1.200, 1.230, 1.270, 1.300, 1.310,
-		1.300, 1.270, 1.200, 1.100, 1.110, 1.270, 1.290, 1.300, 1.290, 1.280,
-		1.270, 1.240, 1.210, 1.210, 1.250, 1.280, 1.300, 1.320, 1.340, 1.350,
-		1.380, 1.400, 1.430, 1.450, 1.480, 1.480, 1.440, 1.400, 1.380, 1.350,
-		1.330, 1.300, 1.250, 1.100, 1.000, 0.980, 0.950, 0.900, 0.870, 0.850,
-		0.850};
-
 	     j = -1;
 	     for (int i=120;i<=170;i++) {
 		RTAh[i] = Pu240_RTAh[++j];
@@ -1847,14 +1881,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 
 	case 94241: // Pu241
 	    // from Ah=121(sym) to Ah=171
-	    static double Pu241_RTAh [51] = { // Adjusted by P. Jaffke to match Wahl nubar(A)
-		1.05 , 1.111, 1.164, 1.212, 1.252, 1.287, 1.316, 1.339, 1.357, 1.370,
-		1.378, 1.382, 1.381, 1.377, 1.369, 1.358, 1.344, 1.327, 1.307, 1.285,
-		1.262, 1.237, 1.21 , 1.182, 1.154, 1.125, 1.095, 1.066, 1.037, 1.009,
-		0.981, 0.955, 0.93 , 0.907, 0.885, 0.866, 0.85 , 0.836, 0.825, 0.818,
-		0.815, 0.815, 0.82 , 0.829, 0.843, 0.861, 0.886, 0.916, 0.951, 0.993,
-		1.041};
-
 	    j = -1;
 	    for (int i=121; i<=171; i++) {
 		RTAh[i] = Pu241_RTAh[++j];
@@ -1863,14 +1889,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 
 	case 94242: // Pu242
 	    // from Ah=121(sym) to Ah=171
-	    static double Pu242_RTAh [51] = { // Adjusted by P. Jaffke to match Wahl nubar(A)
-		1.128, 1.175, 1.217, 1.254, 1.286, 1.313, 1.335, 1.353, 1.367, 1.377,
-		1.384, 1.387, 1.386, 1.383, 1.377, 1.368, 1.357, 1.343, 1.328, 1.311,
-		1.292, 1.272, 1.251, 1.229, 1.206, 1.183, 1.16 , 1.136, 1.113, 1.09 ,
-		1.068, 1.046, 1.026, 1.007, 0.989, 0.973, 0.959, 0.947, 0.937, 0.93 ,
-		0.925, 0.924, 0.926, 0.931, 0.94 , 0.952, 0.969, 0.99 , 1.015, 1.045,
-		1.08 };
-
 	    j = -1;
 	    for (int i=121; i<=171; i++) {
 		RTAh[i] = Pu242_RTAh[++j];
@@ -1880,13 +1898,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 	/* CALIFORNIUMS */
 	case 98252: // Cf252
 	    // from Ah=126 (sym) to Ah=169
-	    static double Cf252_RTAh [44] = { // Adjusted to fit Gook, 2014
-		1.000, 1.173, 1.346, 1.519, 1.692, 1.613, 1.534, 1.455, 1.376, 1.297,
-		1.307, 1.317, 1.328, 1.338, 1.348, 1.359, 1.328, 1.298, 1.267, 1.237,
-		1.196, 1.166, 1.146, 1.115, 1.085, 1.054, 1.051, 0.985, 0.980, 0.953,
-		0.977, 0.991, 0.996, 1.010, 1.024, 1.038, 1.029, 1.020, 1.011, 1.002,
-		0.993, 0.984, 0.975, 0.496 };
-
 	    j = -1;
 	    for (int i=126; i<=169; i++) {
 		RTAh[i] = Cf252_RTAh[++j];
@@ -1895,13 +1906,6 @@ void FissionFragments::readRTAh(int Zt, int At) {
 
 	case 98254: // Cf254
 	    // from Ah=127 (sym) to Ah=169
-	    static double Cf254_RTAh [43] = { // Same as Cf252(sf) but shifted
-		1.173, 1.346, 1.519, 1.692, 1.613, 1.534, 1.455, 1.376, 1.297, 1.307,
-		1.317, 1.328, 1.338, 1.348, 1.359, 1.328, 1.298, 1.267, 1.237, 1.196,
-		1.166, 1.146, 1.115, 1.085, 1.054, 1.051, 0.985, 0.980, 0.953, 0.977,
-		0.991, 0.996, 1.010, 1.024, 1.038, 1.029, 1.020, 1.011, 1.002, 0.993,
-		0.984, 0.975, 0.496 };
-
 	    j = -1;
 	    for (int i=127; i<=169; i++) {
 		RTAh[i] = Cf254_RTAh[++j];
@@ -1979,7 +1983,7 @@ void readRTA (void) {
       for (int i=Amin; i<=Amax; i++) {
         n=str.find(" ");
         RTAdata[c].ratios[i] = atof(str.substr(0,n).c_str());
-        if (n==-1 or i==Amax) {str=""; break; }
+        if (n==-1 || i==Amax) {str=""; break; }
         str=str.substr(n+1);
       }
       c++;
@@ -2877,12 +2881,6 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     ifstream inputFile;
     ofstream outputFile;
 
-    // TODO: WHY IS THERE A DIFFERENT VARIABLE HERE numberEnergies? SHOULDN'T IT BE THE SAME AS WHAT'S IN CONFIG-FF.H? (P.J.)
-    // -----------------------------------------------------------------------------------------------------------------------------
-    //  const int NUME = 501; // number of points on energy grid
-    const int numberEnergies = 401; // number of points on energy grid
-    // -----------------------------------------------------------------------------------------------------------------------------
-
     int i;
 
     int iTKE, Al, Ah, Zl, Zh;
@@ -2903,9 +2901,9 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     double TKEvsMass[NUMA];
     double TXEvsMass[NUMA];
 
-    double initialEnergiesLF[numberEnergies];
-    double initialEnergiesHF[numberEnergies];
-    double initialTXE[numberEnergies];
+    double initialEnergiesLF[NUME];
+    double initialEnergiesHF[NUME];
+    double initialTXE[NUME];
 
     // Initialize
     double **YieldsATKE;
@@ -2927,6 +2925,7 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     for (int i=0; i<NUMA; i++) {
 	excitationEnergies[i]  = 0.0;
 	spins[i]               = 0.0;
+	sTKEvsMass[i]          = 0.0;
 	TKEvsMass[i]           = 0.0;
 	TXEvsMass[i]           = 0.0;
 	numberEventsPerMass[i] = 0;
@@ -2939,10 +2938,9 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     std::fill_n(numberEventsPerCharge,NUMZ,0);
     std::fill_n(numberEventsPerTKE,NUMTKE,0);
 
-    std::fill_n(initialEnergiesLF,numberEnergies,0.0);
-    std::fill_n(initialEnergiesHF,numberEnergies,0.0);
-    std::fill_n(initialTXE,numberEnergies,0.0);
-    std::fill_n(sTKEvsMass,numberEnergies,0.0);
+    std::fill_n(initialEnergiesLF,NUME,0.0);
+    std::fill_n(initialEnergiesHF,NUME,0.0);
+    std::fill_n(initialTXE,NUME,0.0);
 
     double **ZAYields;
     ZAYields = new double * [NUMZ];
@@ -2954,10 +2952,10 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     // TODO: AGAIN, SHOULDN'T THIS BE DEFINED IN CONFIG-FF.H? (P.J.)
     // -----------------------------------------------------------------------------------------------------------------------------
     // define energy grid
-    double energyGrid[numberEnergies];
+    double energyGrid[NUME];
     double deltaE = 0.25;
     // -----------------------------------------------------------------------------------------------------------------------------
-    for (i=0; i<numberEnergies; i++) {
+    for (i=0; i<NUME; i++) {
 	energyGrid[i] = i*deltaE;
     }
 
@@ -2991,9 +2989,9 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
 
 	// Verify that the energies aren't outside of the grid
 	i = int(U/deltaE) + 1;
-	if (i>numberEnergies) {
+	if (i>NUME) {
 	    cout << "U = " << U << "\n";
-	    cerr << "[checkDistributions] ERROR: should increase numberEnergies!" << endl;
+	    cerr << "[checkDistributions] ERROR: should increase NUME!" << endl;
 	    exit(-1);
 	}
 
@@ -3095,7 +3093,7 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     // P(U)
     outputFile << "# [gnuplot " << ++gnuplotIndex << "] Initial Excitation Energy Probability P(Ui)" << endl << endl;
     double sum = 0, sumLF = 0, sumHF = 0;
-    for (int i=0; i<numberEnergies; i++) {
+    for (int i=0; i<NUME; i++) {
 	sum   += initialTXE[i];
 	sumLF += initialEnergiesLF[i];
 	sumHF += initialEnergiesHF[i];
@@ -3103,7 +3101,7 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     sum   *= deltaE;
     sumLF *= deltaE;
     sumHF *= deltaE;
-    for (int i=0; i<numberEnergies; i++) {
+    for (int i=0; i<NUME; i++) {
 	initialTXE[i]        /= sum;
 	initialEnergiesLF[i] /= sumLF;
 	initialEnergiesHF[i] /= sumHF;
@@ -3133,10 +3131,10 @@ void FissionFragments::checkDistributions(string inputFilename, string outputFil
     // P(TXE)
     outputFile << "# [gnuplot " << ++gnuplotIndex << "] Total Excitation Energy Probability P(TXE)" << endl << endl;
     sum = 0;
-    for (int i=0; i<=numberEnergies; i++) {
+    for (int i=0; i<NUME; i++) {
 	sum += initialTXE[i];
     }
-    for (int i=0; i<=numberEnergies; i++) {
+    for (int i=0; i<NUME; i++) {
 	initialTXE[i] /= sum;
 	outputFile << energyGrid[i] << " " << initialTXE[i] << endl;
     }
@@ -4712,6 +4710,30 @@ void readAnisotropy (void) {
  ******************************************************************************/
 void readPreEqAngularDistributionParameters (void) {
 
+  int i,j;
+  ifstream fp;
+ 
+  string str = PREEQSCATTERFILE;
+  // try to open in current directory
+  fp.open(&str[0]);
+  // otherwise, from data directory
+  if (!fp) {
+    str = datadir + str;
+    fp.open(&str[0]);
+  }
+ 
+  i=0;
+  j=0;
+  while (!fp.eof()) { // Loop through file
+    getline(fp, str);
+    if (str.substr(0,1)!="#" && !str.empty()) { // Ignore comments or empty lines
+      istringstream(str) >> preeqScatteringParams[j][i][0] >> preeqScatteringParams[j][i][1] >> preeqScatteringParams[j][i][2] >> preeqScatteringParams[j][i][3] >> preeqScatteringParams[j][i][4] >> preeqScatteringParams[j][i][5];
+      if (i++==3) { i=0; j=1; }
+    }
+  }
+  fp.close();
+
+/*
    ifstream fp;
    string line;
 
@@ -4726,7 +4748,6 @@ void readPreEqAngularDistributionParameters (void) {
 
    while(getline(fp,str)){
    	if(str[0] == '#') continue;
-   }
 
    // read in the parameters and store them into an array
    for(int i=0; i<4;i++){
@@ -4736,7 +4757,10 @@ void readPreEqAngularDistributionParameters (void) {
       fp >> preeqScatteringParams[1][i][0] >> preeqScatteringParams[1][i][1] >> preeqScatteringParams[1][i][2] >> preeqScatteringParams[1][i][3] >> preeqScatteringParams[1][i][4] >> preeqScatteringParams[1][i][5];
    }
 
+   }
+
    fp.close();
+*/
 
    return;
 
@@ -5182,6 +5206,8 @@ void FissionFragments::readMultichanceFissionData(void) {
     string line, subline;
     fissdata.getline(c,399);
     bool found = false; // Tags when we've determined the multi-chance fission probabilities for this incident particle energy
+    double **Pf;
+    double *energies;
 
     while (!fissdata.eof()) {
 
@@ -5205,8 +5231,13 @@ void FissionFragments::readMultichanceFissionData(void) {
 		fissdata >> barrier[i]; // Read in barrier heights
 	    }
 	    emissprob = new double[nn + 1]; // Array for final emission probabilities (at En = incidentEnergy)
-	    double Pf[nenergies][nn+1]; // Fission probabilities for each energy and multi-chance
-	    double energies[nenergies]; // Value of the incident particle energy
+            Pf = new double *[nenergies];
+            energies = new double [nenergies];
+            for (int i=0;i<nenergies;i++) {
+	        Pf[i] = new double [nn + 1];
+	    }
+//	    double Pf[nenergies][nn+1]; // Fission probabilities for each energy and multi-chance
+//	    double energies[nenergies]; // Value of the incident particle energy
 
 	    // Read all the probabilities and energies
 	    for (int i=0;i<nenergies;i++) {
@@ -5235,6 +5266,12 @@ void FissionFragments::readMultichanceFissionData(void) {
 		}
 
 	    }
+
+	    for (int i=0;i<nenergies;i++) {
+	        delete [] Pf[i];
+	    }
+            delete [] Pf;
+            delete [] energies;
 
       // PT, April 2021: segmentation fault if nemit>=nn+1... simple FIX for now: replace <=nemit with <=min(nemit,nn)
 
@@ -5268,6 +5305,7 @@ void FissionFragments::readMultichanceFissionData(void) {
 	    }
 	}
     }
+    
 
     fissdata.close();
 
@@ -5342,13 +5380,13 @@ void FissionFragments::getPrefissionNeutronEnergy(double *excitEnergy){
     cmEnergy_pfn[0] = energy_grid1[kf] + 0.5*ENERGY_BIN*(1-2*rng_cgm()); // Continuum-to-continuum energy transfer
 
     // if the neutron was pre-equilibrium, construct the CDF for the angular sampling
-    float Eexc = ncl[1].excitation[kf];
-    float Einc = incidentEnergy;
+    double Eexc = ncl[1].excitation[kf];
+    double Einc = incidentEnergy;
     if (preeq_flag){
-       float p0 = 0., p1 =0.;
-       float aparm = 0., bparm = 0., cparm = 0., dparm = 0.;
+       double p0 = 0., p1 =0.;
+       double aparm = 0., bparm = 0., cparm = 0., dparm = 0.;
        for (int i=0;i<6;i++){
-	  float Epow = pow(Eexc,i);
+	  double Epow = pow(Eexc,i);
 	  aparm = aparm + preeqScatteringParams[0][0][i]*Epow;
 	  bparm = bparm + preeqScatteringParams[0][1][i]*Epow;
 	  cparm = cparm + preeqScatteringParams[0][2][i]*Epow;
@@ -5360,7 +5398,7 @@ void FissionFragments::getPrefissionNeutronEnergy(double *excitEnergy){
        cparm = 0.;
        dparm = 0.;
        for (int i=0;i<6;i++){
-	  float Epow = pow(Eexc,i);
+	  double Epow = pow(Eexc,i);
 	  aparm = aparm + preeqScatteringParams[1][0][i]*Epow;
 	  bparm = bparm + preeqScatteringParams[1][1][i]*Epow;
 	  cparm = cparm + preeqScatteringParams[1][2][i]*Epow;

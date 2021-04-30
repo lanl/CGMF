@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -22,7 +22,7 @@ void setrngdptr(double (*) (void));
 int  checkdatapath(const char*);
 void setdatapath (const char*);
 
-void   cgm(int, int, double, int, double []);
+void   cgm(int, double, int*, double [], int*, double []);
 void   cgmf_genfissevent(int, double, double, double);
 void   cgmf_genfissyields(int, double, int);
 

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -27,10 +27,12 @@ typedef enum {normal=0, extended=1, reassign=2, all=3} MaxLevelCtl;
 /**************************************/
 /*      ripl2levels.cpp               */
 /**************************************/
-int     riplReadDiscreteLevels (ZAnumber *, Level *, MaxLevelCtl);
-void    riplReadDiscreteLevels (Nucleus *, MaxLevelCtl , int );
-
+#ifdef DEVUTIL
 void	riplReadDiscreteLevelData ();
+int     riplReadDiscreteLevels (ZAnumber *, Level *, MaxLevelCtl);
+// void    riplReadDiscreteLevels (Nucleus *, MaxLevelCtl , int );
+#endif
+
 void	getRiplDiscreteLevels (Nucleus *, int);
 void	getRiplDiscreteLevels (Nucleus *);
 void	fixLevels(Nucleus *, bool, MaxLevelCtl);

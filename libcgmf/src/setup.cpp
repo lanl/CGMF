@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -29,12 +29,11 @@ using namespace std;
 #include "terminate.h"
 #include "config.h"
 #include "physics.h"
+#include "rngcgm.h"
 
 //#include "global_var.h"
 #include "kcksyst.h"
 //#include "kcksyst2.h"
-
-extern std::function< double(void) > rng_cgm;
 
 #ifdef  HAVE_PRIVATE_ENERGY_GRID
 #include GRID_STRUCTURE_FILE
@@ -287,9 +286,16 @@ void statGenerateLevels(int nlev, Nucleus *n, LevelDensity *ldp)
     n->lev[i].ngamma   =  1;
     
     for(int j=0 ; j<n->lev[i].ngamma ; j++){
-      n->lev[i].fstate[j] = 0;
-      n->lev[i].branch[j] = 1.0;
-      n->lev[i].gratio[j] = 1.0;
+      if(j==0){
+        n->lev[i].fstate[j] = 0;
+        n->lev[i].branch[j] = 1.0;
+        n->lev[i].gratio[j] = 1.0;
+      }
+      else{
+        n->lev[i].fstate.push_back(0);
+        n->lev[i].branch.push_back(1.0);
+        n->lev[i].gratio.push_back(1.0);
+      }
     }
   }
   statFixDiscreteLevels(n);

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -238,9 +238,11 @@ class FissionFragments
   // energy sorting methods & variables
   double Pfactor (int Z, int N);
   void computePfactors (void);
+#ifdef DEVUTIL
   void computeLevelDensityTables (void);
   void computeLevelDensityParameterTables (void);
-  
+#endif
+
   void readLevelDensityParameterTables (string filename);
 	void readLevelDensityTables (string filename);
     

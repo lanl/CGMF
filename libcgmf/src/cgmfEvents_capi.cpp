@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf_help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -25,7 +25,7 @@ cgmfYields* cgmf_yields;
 \brief Set the random number generator used throughout the code
 */  
 void setrngdptr(double (*funcptr) (void)) {
-  rngdptr = funcptr;
+  set_rng(funcptr);
 }
 
 /*!
@@ -45,13 +45,16 @@ void setdatapath (const char* datapath) {
 /*!
 \brief Instantiates a new cgm event.
 */
-void cgm(int dz, int da, double dex, int *dmcl_nlines, double dmcl_glines[30]) {
+void cgm(int dza, double dex, int *dmcl_nlines, double dmcl_glines[30],
+         int *dmcl_nlinesn, double dmcl_elinesn[30]) {
   if (cgm_event != 0) delete cgm_event;
 
-  cgm_event = new cgmEvent(dz*1000+da,dex,0.0);
- 
+  cgm_event = new cgmEvent(dza,dex,0.0);
+
   *dmcl_nlines = (*cgm_event).getPhotonNu();
   for (int ii=0; ii<*dmcl_nlines; ii++) dmcl_glines[ii] = (*cgm_event).getPhotonEnergy(ii);
+  *dmcl_nlinesn = (*cgm_event).getNeutronNu();
+  for (int ii=0; ii<*dmcl_nlinesn; ii++) dmcl_elinesn[ii] = (*cgm_event).getNeutronEnergy(ii);
 }
 
 /*!

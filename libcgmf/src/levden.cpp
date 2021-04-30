@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -80,7 +81,7 @@ double ldDensityParameter(double excitation_energy, double mass, LevelDensity *l
 /**********************************************************/
 double ldSpinDistribution(double j, double sc, double sc0)
 {
-  double s = cfmax(sc,sc0);
+  double s = max(sc,sc0);
 
   double r = (j+0.5)*exp( -(j+0.5)*(j+0.5)/(2.0*s*s) )/(s*s);
   if( (SpinDistributionCut > 0.0) && (r < SpinDistributionCut) ) r = 0.0;
@@ -128,7 +129,7 @@ void ldTGconnect(double mass, double lve, double lvn, LevelDensity *ldp)
 
   double lvu  = lve - ldp->pairing_energy;
   double a    = ldShellCorrection(lvu,ldp->a,ldp->shell_correct,mass);
-  double ex1  = cfmax(ldp->pairing_energy,9.0/(4.0*a));
+  double ex1  = max(ldp->pairing_energy,9.0/(4.0*a));
   double ex2  = 100.0;
 
   double t, e01, e02, ex, ux, eps = 0.0;
@@ -139,7 +140,7 @@ void ldTGconnect(double mass, double lve, double lvn, LevelDensity *ldp)
     ux  = ex - ldp->pairing_energy;
 
     /*** if Ux is lower than max discrete level energy, a-val is constant */
-    a   = ldShellCorrection(cfmax(lvu,ux),ldp->a,ldp->shell_correct,mass);
+    a   = ldShellCorrection(max(lvu,ux),ldp->a,ldp->shell_correct,mass);
     t   = 1.0/(sqrt(a/ux)-3.0/(2.0*ux)); 
 
     /*** cannot connect const. temp and Fermi gas */
@@ -168,7 +169,7 @@ void ldTGconnect(double mass, double lve, double lvn, LevelDensity *ldp)
 /**********************************************************/
 void ldTextrapolate(double mass, double lve, LevelDensity *ldp)
 {
-  double ex1  = cfmax(ldp->pairing_energy,lve);
+  double ex1  = max(ldp->pairing_energy,lve);
   double ex2  = 100.0;
 
   double a=0.0, r1, r2, ex, ux, eps = 0.0;
@@ -250,7 +251,7 @@ double ldSpinCutoff(double u, double a, double mass, double sig0)
 
   sig2 = sqrt(sig2);
 
-  return( cfmax(sig2,sig0) );
+  return( max(sig2,sig0) );
 }
 
 
