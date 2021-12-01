@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
-#  CGMF-1.0
-#  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+#  CGMF-1.1
+#  Copyright TRIAD/LANL/DOE - see file LICENSE
 #  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 #-------------------------------------------------------------------------------
 # Parameters to a fit of the angular distributions of pre-equilibrium neutrons
@@ -15,6 +15,7 @@
 # there are 8 lines, the u values for a, b, c, d for p0 then the u values 
 # for a, b, c, d for p1
 #-------------------------------------------------------------------------------
+
  2.27554291e+00 -1.11511434e+00  1.88995865e-01 -3.28402201e-02  4.13735891e-03 -1.75903501e-04
 -3.12633022e-01  9.97041269e-02  9.66103676e-03 -1.95973335e-03 -1.46357562e-04  1.55435487e-05
  1.99321109e-02 -4.97819514e-03 -1.65647620e-03  3.81266892e-04 -1.45337363e-05 -2.46164195e-07

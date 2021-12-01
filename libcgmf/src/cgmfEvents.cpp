@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -28,7 +28,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <ctime>
-#include <netdb.h>
+//#include <netdb.h>
 //#include <unistd.h>
 
 using namespace std;
@@ -43,12 +43,22 @@ using namespace std;
 #include "physics.h"
 #include "kcksyst.h"
 #include "ripl2levels.h"
+#include "rngcgm.h"
+#include "cgmf_config.h"
 
 static bool firstcalc = true;
 string datadir = "";
 
 void set_time_coincidence_window(double timew);
 
+
+std::function< double(void) > rng_cgm;
+void set_rng(std::function<double(void)> rng) {
+  rng_cgm = rng;
+}
+void set_rng(double (*rng) (void)) {
+  rng_cgm = rng;
+}
 
 /*!
 \brief Used to check the directory path containing auxiliary data files, usually in the main driver file.
@@ -67,33 +77,39 @@ int checkdatapath (string datapath) {
 /*!
 \brief Used to set the directory path containing auxiliary data files, usually in the main driver file.
 */
-void setdatapath (string datapath) {
-  datadir = datapath;
+void setdatapath (string path) {
+
+  if (path == "") {
+    if (checkdatapath(INSTALL_DATADIR)) {
+      path = INSTALL_DATADIR;
+    } else if (checkdatapath(BUILD_DATADIR)) {
+      path = BUILD_DATADIR;
+    } else {
+      cerr << "Cannot find valid path to CGMF data ... returning" << endl;
+      exit(-1);
+    }
+  }
+  if( path.back() != '/' ) path += "/";
+
+  datadir = path;
 }
+
 
 int MAX_ENERGY_BIN;   ///< Maximum number of energy bins used in the continuum
 int MAX_J;            ///< Maximum number of angular momentum values in the spin distributions 
 int MAX_LEVELS;       ///< Maximum number of discrete levels used in any nucleus
-int MAX_GAMMA_BRANCH; ///< Maximum number of discrete gamma lines considered for a given nucleus
 
 double ENERGY_BIN;          ///< size of the energy bins in the continuum (in MeV)
 double CONTINUUM_LOWER_CUT; ///< lower-energy threshold to eliminate very small gamma energies in the continuum
 
 int mcl_nlines;
+int mcl_nlinesn;
 double mcl_glines[30]={1.0};
+double mcl_elinesn[30]={1.0};
 
 Calculation   ctl;
 Nucleus      *ncl;                 ///< 0: parent, 1 - MAX_COMPOUND-1: daughters etc
 double       *spc[SPECTRA_OUTPUT]; ///< 0: gamma, 1: neutron, 2: electron, 3: neutrino
-
-Level	*allLevels;     ///< all discrete levels from RIPL database
-int   *zaidIndex;     ///< indices for all nuclei
-int   *numberLevels;  ///< number of discrete levels in each nucleus
-
-Level *allLevels2;    ///< all discrete levels from RIPL database
-int   *zaidIndex2;    ///< indices for all nuclei
-int   *numberLevels2; ///< number of discrete levels in each nucleus
-
 
 ostringstream oserr;
 
@@ -130,8 +146,6 @@ cgmEvent::cgmEvent (int isotope, double eng, double time) {
 
   if(firstcalc) {
     initialization(o);
-//    readripldat(zaid_index,elev_s_t,p_ng,nf_t,pe_t,ic_t);
-    readkcksystdat();
     firstcalc = false;
   }
   cgmAllocateMemory();
@@ -159,9 +173,13 @@ cgmEvent::cgmEvent (int isotope, double eng, double time) {
   // assign vars to pass back to fortran code
   cgmGetSpectra(ncl[0].de,spc);
   photonNu = mcl_nlines;
+  neutronNu = mcl_nlinesn;
   allocateMemory();
   if (photonNu>0) {
     for (int ii=0; ii<mcl_nlines; ii++) photonEnergies[ii] = mcl_glines[ii];
+  }
+  if (neutronNu>0) {
+    for (int ii=0; ii<mcl_nlinesn; ii++) neutronEnergies[ii] = mcl_elinesn[ii];
   }
 
   return;
@@ -200,16 +218,25 @@ cgmEvent::~cgmEvent () {
 /**********************************************************/
 void cgmEvent::initialization (unsigned int o) {
 
-  MAX_ENERGY_BIN      = 3000;
-  MAX_J               = 50;
-  MAX_LEVELS          = 500;
-  MAX_GAMMA_BRANCH    = 50;
-  ENERGY_BIN          = 0.01;
-  CONTINUUM_LOWER_CUT = 0.01;
+  MAX_ENERGY_BIN      = 2500; //1000; // 2000;
+  MAX_J               = 50; //50; // 70;
+  MAX_LEVELS          = 200; //200; // 700;
+  ENERGY_BIN          = 0.05; //0.1; // 0.05;
+  CONTINUUM_LOWER_CUT = 0.02;
 
   outputOptions(o);
 
   readDiscreteLevelData();
+  readkcksystdat();
+  readMasses();
+  readDeformations();
+  readTemperatures();
+  readLDP();
+  readAnisotropy();
+  readPreEqAngularDistributionParameters();
+  readRTA();
+  readSpinScaling();
+  readPreeqData();
 
 }
 
@@ -344,8 +371,6 @@ cgmfEvent::cgmfEvent  (int isotope, double eng, double time, double timew) : cgm
 	int nevents = 1;
 	
   double alphaI  = 0.0;
-
-//  fissionEventType eventLF, eventHF;
 
   fissionFragmentType *lf, *hf;
 
@@ -561,7 +586,7 @@ void cgmfEvent::checkInput (int isotope, double einc) {
 
   if (not found) { cerr << "ERROR: Isotope not handled by CGMF or wrong incident energy\n"; exit(-1); }
   if (isotope<0 and einc!=0.0) { cerr << "ERROR: Only spontaneous fission is handled for this isotope\n"; exit(-1); }
-  if (isotope>0 and (einc>20.0 or einc<2.53e-8)) { cerr << "ERROR: Incident neutron energy must be between 2.53e-8 MeV (thermal) and 20 MeV\n"; exit (-1); }
+  if (isotope>0 and (einc>20.0 or einc<=0.0)) { cerr << "ERROR: Incident neutron energy must be greater than 0 MeV and less than or equal to 20 MeV\n"; exit (-1); }
 
   return;
 
@@ -577,7 +602,6 @@ void cgmfEvent::checkInput (int isotope, double einc) {
  \param MAX_ENERGY_BIN: maximum number of energy bins in the continuum
  \param MAX_J: maximum number of spin values for a given energy level
  \param MAX_LEVELS: maximum number of discrete levels in a nucleus
- \param MAX_GAMMA_BRANCH: maximum number of gamma decay branches in a level scheme
  \param ENERG_BIN: energy bin width (in MeV)
  \param CONTINUUM_LOWER_CUT: \todo to better define!
  
@@ -588,7 +612,6 @@ void cgmfEvent::initialization () {
 	MAX_ENERGY_BIN      = 2500; //1000; // 2000;
 	MAX_J               = 50; //50; // 70;
 	MAX_LEVELS          = 200; //200; // 700;
-	MAX_GAMMA_BRANCH    = 20; // 50; // 100;
 	ENERGY_BIN          = 0.05; //0.1; // 0.05;
 	CONTINUUM_LOWER_CUT = 0.02;
 	

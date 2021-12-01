@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ int omExternalFunction(int lmax, double rho_match, double coulomb, double coulom
     p2 = g1;
   }
 
-  double a = (coulomb==0.0) ? 1.0 : cfmax(g0*g0,g1*g1);
+  double a = (coulomb==0.0) ? 1.0 : max(g0*g0,g1*g1);
 
   for(l=1 ; l<MAX_L-1 ; l++){
     wfn->external[l+1].real=p3=omGfunction(l,coulomb,rho_match,p1,p2);

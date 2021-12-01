@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -24,8 +24,7 @@ using namespace std;
 #include "physics.h"
 #include "kinematics.h"
 #include "FissionFragments.h"
-
-extern std::function< double(void) > rng_cgm;
+#include "rngcgm.h"
 
 void boost (double fragmentMomentum[3], int Zf, int Af,
             int    neutronMultiplicity,

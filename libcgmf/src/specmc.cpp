@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -29,8 +29,7 @@ using namespace std;
 #include "physics.h"
 #include "kinematics.h"
 #include "FissionFragments.h"
-
-extern std::function< double(void) > rng_cgm;
+#include "rngcgm.h"
 
 void recordEmittedParticles (void);
 void recordEmittedParticlesFission (fissionEventType *);
@@ -211,9 +210,6 @@ void specMCMainFission(fissionEventType *fe)
 /******************************************************************************/
 void specMCMain(double initJ, int initP, double targE, double spinf, unsigned long nsim, double **spc)
 {
-  Transmission  tin;
-  Pdata         pdt[MAX_CHANNEL];
-  Parity        **pin = NULL;
 
   specMCalloc();
 
@@ -323,9 +319,6 @@ void specMCMain(double initJ, int initP, double targE, double spinf, unsigned lo
   }
   mcNormalizeSpectrum(nsim,spc);
 
-  for(int j=0 ; j<MAX_ENERGY_BIN ; j++) delete [] pin[j];
-  delete [] pin;
-  delete [] tin.tran;
 }
 
 

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -17,6 +17,8 @@
    structure.h :
         common structure definition
 */
+
+#include <vector>
 
 #include "dimensions.h"
 #include "gdr.h"
@@ -118,14 +120,14 @@ class Pdata{
 /****************************/
 class Level{
  public:
-    double     energy        ;     /* Level energy                     */
-    double     spin          ;     /* Level spin                       */
-    int        parity        ;     /* Parity                           */
-    int        ngamma        ;     /* Number of Gamma-rays             */
-    int       *fstate        ;     /* Final state index for g-decay    */
-    double    *branch        ;     /* Branching ratio                  */
-    double     halflife      ;     /* half-life of the state           */
-    double    *gratio        ;     /* net gamma-ray considering ICC    */
+    double              energy   ; /* Level energy                     */
+    double              spin     ; /* Level spin                       */
+    int                 parity   ; /* Parity                           */
+    int                 ngamma   ; /* Number of Gamma-rays             */
+    double              halflife ; /* half-life of the state           */
+    std::vector<int>    fstate   ; /* Final state index for g-decay    */
+    std::vector<double> branch   ; /* Branching ratio                  */
+    std::vector<double> gratio   ; /* net gamma-ray considering ICC    */
 
     Level(){
       energy   = 0.0;
@@ -133,51 +135,9 @@ class Level{
       parity   = 0;
       ngamma   = 0;
       halflife = 0.0;
-      fstate   = new int    [MAX_GAMMA_BRANCH];
-      branch   = new double [MAX_GAMMA_BRANCH];
-      gratio   = new double [MAX_GAMMA_BRANCH];
-    }
-    Level(const Level& that){
-      gratio   = new double [MAX_GAMMA_BRANCH];
-      branch   = new double [MAX_GAMMA_BRANCH];
-      fstate   = new int    [MAX_GAMMA_BRANCH];
-      for(int i=0 ; i<MAX_GAMMA_BRANCH ; i++){
-        gratio[i] = that.gratio[i];
-        branch[i] = that.branch[i];
-        fstate[i] = that.fstate[i];
-      }
-      halflife = that.halflife;
-      ngamma   = that.ngamma;
-      parity   = that.parity;
-      spin     = that.spin;
-      energy   = that.energy;
-    }
-    Level& operator=(const Level& that){
-      double* local_gratio = new double [MAX_GAMMA_BRANCH];
-      double* local_branch = new double [MAX_GAMMA_BRANCH];
-      int*    local_fstate = new int    [MAX_GAMMA_BRANCH];
-      for(int i=0 ; i<MAX_GAMMA_BRANCH ; i++){
-        local_gratio[i] = that.gratio[i];
-        local_branch[i] = that.branch[i];
-        local_fstate[i] = that.fstate[i];
-      }
-      delete [] gratio;
-      delete [] branch;
-      delete [] fstate;
-      gratio = local_gratio;
-      branch = local_branch;
-      fstate = local_fstate;
-      halflife = that.halflife;
-      ngamma   = that.ngamma;
-      parity   = that.parity;
-      spin     = that.spin;
-      energy   = that.energy;
-      return *this;
-    }
-    ~Level(){
-      delete [] gratio;
-      delete [] branch;
-      delete [] fstate;
+      fstate.push_back(0);
+      branch.push_back(1.0);
+      gratio.push_back(1.0);
     }
 };
 

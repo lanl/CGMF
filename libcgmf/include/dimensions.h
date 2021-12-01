@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -21,7 +21,6 @@
 extern int MAX_ENERGY_BIN;
 extern int MAX_J;
 extern int MAX_LEVELS;
-extern int MAX_GAMMA_BRANCH;
 
 const int MAX_MULTIPOL     =    3 ;  /* multipolarity, E1, E1(def), M1, E2    */
 const int MAX_GDR          =    6 ;  /* maximum GDRs and pygmy resonance      */

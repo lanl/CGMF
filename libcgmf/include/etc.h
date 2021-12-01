@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -18,14 +18,6 @@ double  jvol_to_dep           (double, double, double, double);
 double  jsrf_to_dep           (double, double, double, double);
 double  dep_to_jvol           (double, double, double, double);
 double  dep_to_jsrf           (double, double, double, double);
-
-#ifndef HAVE_MINMAX
-int     min                   (int   ,int   );
-int     max                   (int   ,int   );
-#endif
-
-double  cfmin                 (double,double);
-double  cfmax                 (double,double);
 
 double  gaussian_weight       (double, double, double);
 double  laguerre              (int,    double, double);

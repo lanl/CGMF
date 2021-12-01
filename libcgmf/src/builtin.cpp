@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -16,6 +16,7 @@
 #include <cmath>
 #include <string>
 #include <cstring>
+#include <algorithm>
 
 using namespace std;
 
@@ -699,7 +700,7 @@ unsigned int avrigeanu2009(double e, int at, int zt, int ai, int zi, Optical *om
 
   omp->r0  =  (e<25.0) ? 1.18 + 0.012*e : 1.48;
   omp->a0  =  (e<e2) ? 0.671 + 0.0012*at + (0.0094 - 0.0042*a13)*e2 :
-                       cfmax(0.671 + 0.0012*at + (0.0094 - 0.0042*a13)*e,0.55);
+                       max(0.671 + 0.0012*at + (0.0094 - 0.0042*a13)*e,0.55);
 
   omp->rv  =  1.34;
   omp->av  =  0.50;

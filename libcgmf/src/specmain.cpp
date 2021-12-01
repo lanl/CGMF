@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf_help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -23,8 +23,7 @@ using namespace std;
 #include "ripl2levels.h"
 #include "terminate.h"
 #include "config.h"
-
-extern std::function< double(void) > rng_cgm;
+#include "rngcgm.h"
 
 static void    specCompoundDecay   (int, int, Transmission *, Transmission *, double **, double **);
 static double  specTransmissionSum (Statcalcmode, bool *, int, int, int, double **,

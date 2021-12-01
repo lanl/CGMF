@@ -1,3 +1,9 @@
+/*------------------------------------------------------------------------------
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
+  For any questions about CGMF, please contact us at cgmf-help@lanl.gov
+-------------------------------------------------------------------------------*/
+
 //
 //  cgmf.cpp
 //
@@ -11,10 +17,9 @@
 
 #include "cgmfEvents.h"
 #include "rngcgm.h"
+
 #include "config.h"
 #include "config-ff.h"
-
-#include "cgmf_config.h"
 
 #ifdef MPIRUN
 #include <mpi.h>
@@ -422,18 +427,10 @@ void readUserInput (int argc, char *argv[], int ip) {
   if (path == "") {
     if (getenv("CGMFDATA") != NULL) {
       path = string(getenv("CGMFDATA"));
-    } else if (checkdatapath(INSTALL_DATADIR)) {
-      path = INSTALL_DATADIR;
-    } else if (checkdatapath(BUILD_DATADIR)) {
-      path = BUILD_DATADIR;
-    } else {
-      cerr << "Cannot find valid CGMFDATA path ... returning" << endl;
-      exit(-1);
     }
   }
-  if( path.back() != '/' ) path += "/";
-  setdatapath(path);
 
+  setdatapath(path);
 
   return;
 

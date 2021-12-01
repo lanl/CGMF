@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -67,14 +67,6 @@ Complex rational(double a1, double a2, double b1, double b2)
 
   return(c);
 }
-
-#ifndef HAVE_MINMAX
-int min(int x, int y){ return( (x<y) ? x : y); }
-int max(int x, int y){ return( (x>y) ? x : y); }
-#endif
-
-double cfmin(double x, double y){ return( (x<y) ? x : y); }
-double cfmax(double x, double y){ return( (x>y) ? x : y); }
 
 
 double dep_to_jvol(double anum, double v, double r, double a)

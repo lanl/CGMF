@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  CGMF-1.0
-  Copyright TRIAD/LANL/DOE - see file COPYRIGHT.md
+  CGMF-1.1
+  Copyright TRIAD/LANL/DOE - see file LICENSE
   For any questions about CGMF, please contact us at cgmf-help@lanl.gov
 -------------------------------------------------------------------------------*/
 
@@ -17,15 +17,18 @@
 #ifdef __cplusplus
 #include <string>
 #endif
+#include <vector>
+#include <functional>
 
 #include "config-ff.h"
 
-static double (*rngdptr)(void);
-
-void setrngdptr(double (*) (void));
 int  checkdatapath(std::string);
 void setdatapath(std::string);
 void cgmf_cleanup(void);
+
+void set_rng(std::function<double(void)>);
+void set_rng(double (*) (void));
+
 
 /* cgmEvent class: base class for cgmfEvent */
 

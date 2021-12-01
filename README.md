@@ -1,7 +1,7 @@
 CGMF, Cascading Gamma-ray Multiplicity and Fission
 ==================================================
 
-Updated on Apr. 29, 2021
+Updated on Sept. 24, 2021
 
 ---
 Authors
@@ -32,19 +32,19 @@ Citing
 
 The main publication (and documentation) to cite for CGMF is:
 
-Patrick Talou, Ionel Stetcu, Patrick Jaffke, Michael E. Rising, Amy E. Lovell, and Toshihiko Kawano, “Fission Fragment Decay Simulations with the CGMF Code,” to be submitted to Comp. Phys. Comm. (2020).
+Patrick Talou, Ionel Stetcu, Patrick Jaffke, Michael E. Rising, Amy E. Lovell, and Toshihiko Kawano, “Fission Fragment Decay Simulations with the CGMF Code,” Comp. Phys. Comm., 269 (2021), Article 108087. DOI: [10.1016/j.cpc.2021.108087](https://doi.org/10.1016/j.cpc.2021.108087)
 
 ---
 Documentation
 -------------
 
-- Patrick Talou, Ionel Stetcu, Patrick Jaffke, Michael E. Rising, Amy E. Lovell, and Toshihiko Kawano, “Fission Fragment Decay Simulations with the CGMF Code,” to be submitted to Comp. Phys. Comm. (2020). Los Alamos Technical Report LA-UR-20-21264 (2020).
+- Patrick Talou, Ionel Stetcu, Patrick Jaffke, Michael E. Rising, Amy E. Lovell, and Toshihiko Kawano, “Fission Fragment Decay Simulations with the CGMF Code,” Comp. Phys. Comm., 269 (2021), Article 108087. Los Alamos Technical Report LA-UR-20-21264 (2020).
 
 ---
 Version
 -------
 
-### Current Version 1.0.1
+### Current Version 1.1.0
 
 - Open source, BSD-3
 - Copyright: Triad National Security, LLC. All rights reserved.
@@ -74,9 +74,9 @@ Building, Testing and Installing Instructions
 7) Installing: type `make install` to install CGMF
     * This creates the following directory structure in the CMAKE_INSTALL_PREFIX directory:
         * bin/ [contains cgmf executable]
-        * cgmf/data [contains cgmf data files]
-        * cgmf/include [contains cgmf header files]
-        * lib/ [contains libcgmf library]
+        * include/cgmf-1.1.0 [contains cgmf header files]
+        * lib/cgmf-1.1.0 [contains libcgmf library]
+        * share/data/cgmf-1.1.0 [contains cgmf data files]
 
 Example configuration in release mode with build, test and install:
 * `cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -Dcgmf.x.MPI=ON ..`
