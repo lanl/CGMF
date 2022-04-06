@@ -1976,6 +1976,7 @@ void readRTA (void) {
   while(getline(fp,str)){
     if(str[0] == '#') continue;
     while (str!="") {
+      if (str[0]=='\r' || str[0]=='\n') break;
       RTAdata[c].ZAID = abs(atoi(str.substr(0,7).c_str()));
       Amin = atoi(str.substr(7,12).c_str());
       Amax = atoi(str.substr(12,17).c_str());
@@ -4664,7 +4665,7 @@ void readAnisotropy (void) {
    string line;
    int iZID = 1;
    int counter = 0;
-   double Emin,Emax,Estep;
+   double Emin,Emax,Estep,ZAID;
    int nEsteps;
    
    string str = ANISOTROPYFILE;
@@ -4693,7 +4694,9 @@ void readAnisotropy (void) {
 	 iZID += 1;
 	 counter = 0;
       }
-      fp >> anisotropy[iZID][0];
+      fp >> ZAID;
+      if (fp.eof()) break;
+      anisotropy[iZID][0] = ZAID;
       for (counter=0;counter<nEsteps;counter++){
          fp >> anisotropy[iZID][counter+1];
       }
@@ -4726,7 +4729,7 @@ void readPreEqAngularDistributionParameters (void) {
   j=0;
   while (!fp.eof()) { // Loop through file
     getline(fp, str);
-    if (str.substr(0,1)!="#" && !str.empty()) { // Ignore comments or empty lines
+    if (str.substr(0,1)!="#" && !str.empty() && str[0]!='\r' && str[0]!='\n') { // Ignore comments or empty lines
       istringstream(str) >> preeqScatteringParams[j][i][0] >> preeqScatteringParams[j][i][1] >> preeqScatteringParams[j][i][2] >> preeqScatteringParams[j][i][3] >> preeqScatteringParams[j][i][4] >> preeqScatteringParams[j][i][5];
       if (i++==3) { i=0; j=1; }
     }
@@ -4851,6 +4854,7 @@ void readMasses (void) {
     while(getline(fp,str)){
 	if(str[0] == '#') continue;
 	while (str!="") {
+            if (str[0]=='\r' || str[0]=='\n') break;
 	    zaid = atoi(str.substr(0,7).c_str());
 	    m    = atof(str.substr(7,18).c_str());
 	    masses[zaid] = m;
