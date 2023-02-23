@@ -1,13 +1,13 @@
 CGMFtk, CGMF toolkit 
 ====================
 
-Updated November 2020
+Updated February 2024
 
 ---
 Versions
 --------
 
-### Current Version 1.0
+### Current Version 1.1.2
 
 - includes function to analyze CGMF history files and CGMF yield files
 

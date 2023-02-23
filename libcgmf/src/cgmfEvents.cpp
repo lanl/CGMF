@@ -393,6 +393,9 @@ cgmfEvent::cgmfEvent  (int isotope, double eng, double time, double timew) : cgm
  	cgmAllocateMemory();
 //	allocateMemory();
 
+  ctl.calc_montecarlo = CALC_MC;
+  ctl.init_pop        = SINGLE;
+
   lf = new fissionFragmentType [nevents];
   hf = new fissionFragmentType [nevents];
   ff = new FissionFragments (isotope, eng, alphaI);
@@ -455,7 +458,7 @@ cgmfEvent::cgmfEvent  (int isotope, double eng, double time, double timew) : cgm
 			neutronDircosu[i]    = eventLF.neutronDircosu[i];
 			neutronDircosv[i]    = eventLF.neutronDircosv[i];
 			neutronDircosw[i]    = eventLF.neutronDircosw[i];
-			neutronAges[i]       = 0.0;
+			neutronAges[i]       = time;
 
       cmNeutronEnergies[i] = eventLF.cmNeutronEnergies[i];
       cmNeutronDircosu[i]  = eventLF.cmNeutronDircosu[i];
@@ -469,7 +472,7 @@ cgmfEvent::cgmfEvent  (int isotope, double eng, double time, double timew) : cgm
 			neutronDircosu[ii]    = eventHF.neutronDircosu[i];
 			neutronDircosv[ii]    = eventHF.neutronDircosv[i];
 			neutronDircosw[ii]    = eventHF.neutronDircosw[i];
-			neutronAges[ii]       = 0.0;
+			neutronAges[ii]       = time;
 
       cmNeutronEnergies[ii] = eventHF.cmNeutronEnergies[i];
       cmNeutronDircosu[ii]  = eventHF.cmNeutronDircosu[i];
@@ -486,7 +489,7 @@ cgmfEvent::cgmfEvent  (int isotope, double eng, double time, double timew) : cgm
 			photonDircosu[i]    = eventLF.photonDircosu[i];
 			photonDircosv[i]    = eventLF.photonDircosv[i];
 			photonDircosw[i]    = eventLF.photonDircosw[i];
-			photonAges[i]       = eventLF.photonAges[i];
+			photonAges[i]       = time + eventLF.photonAges[i];
 		}
 		
 		for (int i=0; i<eventHF.nug; i++) {
@@ -495,7 +498,7 @@ cgmfEvent::cgmfEvent  (int isotope, double eng, double time, double timew) : cgm
 			photonDircosu[ii]    = eventHF.photonDircosu[i];
 			photonDircosv[ii]    = eventHF.photonDircosv[i];
 			photonDircosw[ii]    = eventHF.photonDircosw[i];
-			photonAges[ii]       = eventHF.photonAges[i];
+			photonAges[ii]       = time + eventHF.photonAges[i];
 		}
 
 	}
@@ -616,8 +619,6 @@ void cgmfEvent::initialization () {
 	CONTINUUM_LOWER_CUT = 0.02;
 	
   outputOptions(4); // o=4
-  ctl.calc_montecarlo = CALC_MC;
-  ctl.init_pop        = SINGLE;
 	
 //  riplReadDiscreteLevelData(); // read the entire RIPL3 database of discrete levels
 	readDiscreteLevelData();

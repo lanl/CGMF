@@ -362,6 +362,16 @@ class Histories:
 		
 		nevents = int(nfragments/2)
 
+		cmNeutronEnergies=np.asarray(cmNeutronEnergies,dtype=object)
+		labNeutronEnergies=np.asarray(labNeutronEnergies,dtype=object)
+		cmGammaEnergies=np.asarray(cmGammaEnergies,dtype=object)
+		labGammaEnergies=np.asarray(labGammaEnergies,dtype=object)
+		photonAges=np.asarray(photonAges,dtype=object)
+		cmNeutronDircos=np.asarray(cmNeutronDircos,dtype=object)
+		labNeutronDircos=np.asarray(labNeutronDircos,dtype=object)
+		labPreFissionNeutronEnergies=np.asarray(labPreFissionNeutronEnergies,dtype=object)
+		labPreFissionNeutronDircos=np.asarray(labPreFissionNeutronDircos,dtype=object)
+
 		data = np.dstack((A,Z,U,J,P,KEpre,nmult,gmult,cmNeutronEnergies,labNeutronEnergies,cmGammaEnergies, labGammaEnergies,photonAges,preFragmentsX,preFragmentsY,preFragmentsZ,postFragmentsX,postFragmentsY,postFragmentsZ,cmNeutronDircos,labNeutronDircos,prenmult,labPreFissionNeutronEnergies,labPreFissionNeutronDircos,KEpost))
 
 
@@ -647,7 +657,17 @@ class Histories:
 			return (times,nug)
 
 		else:
-			return (np.mean(self.nug))
+			if (Eth is not None):
+				Eth = Eth
+			else:
+				Eth = 0.
+			nug = []
+			gE = self.getGammaElab()
+			for x in gE:
+				x = np.array(x)
+				nug.append(len(x[x>=Eth]))
+			nug = np.array(nug)
+			return (np.mean(nug))
 	
 	def nubargtot(self,timeWindow=None,Eth=None):
 		"""Returns the average gamma multiplicity, per fission event
@@ -693,7 +713,19 @@ class Histories:
 			return (times,nug)
 
 		else:
-			return (np.mean(self.nugLF+self.nugHF))
+			if (Eth is not None):
+				Eth = Eth
+			else:
+				Eth = 0.
+			nugtot = self.nugLF+self.nugHF
+			gEall = self.getGammaElab()
+			gE = gEall[::2]+gEall[1::2]
+			nug = []
+			for x in gE:
+				x = np.array(x)
+				nug.append(len(x[x>=Eth]))
+			nug = np.array(nug)
+			return (np.mean(nug))
 
 	def preFissionNubar (self):
 		"""Returns the average neutron multiplicity of the pre-fission neutrons"""
@@ -884,9 +916,27 @@ class Histories:
 		"""Returns a two-dimensional array for neutron multiplicity as a function of A of format [A,nu]"""
 		return (self._qA(self,'nuA'))
 	
-	def nubargA (self):
-		"""Returns a two-dimensional array for gamma multiplicity as a function of A of format [A,nug]"""
-		return (self._qA(self, 'nugA'))
+	def nubargA (self,Eth=0.):
+		"""Returns a two-dimensional array for gamma multiplicity as a function of A of format [A,nug] with optional threshold energy"""
+		nA = []
+		for e in self.gElab:
+			e1 = np.array(e)
+			nA.append(len(e1[e1>=Eth]))
+		nA = np.array(nA)
+		A = self.getA()
+		Amin = np.min(A)
+		Amax = np.max(A)
+		nugA = []
+		As = []
+		for a in range(Amin,Amax+1):
+			mask = A==a
+			As.append(a)
+			if (len(nA[mask])==0):
+				nugA.append(0)
+			else:
+				nugA.append(np.mean(nA[mask]))
+		
+		return (np.array(As),np.array(nugA))
 	
 	def UA (self):
 		"""Returns a two-dimensional array for excitation energy as a function of A of format [A,U]"""
