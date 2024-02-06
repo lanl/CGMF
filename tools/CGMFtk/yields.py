@@ -60,13 +60,13 @@ class Yields:
 			print ('WARNING')
 			print ('You asked for ',int(nevents),' events and there are only ',self.numberEvents,' in this yield file')
 		
-		self.A = self.yields[:,0].astype(int)
-		self.Z = self.yields[:,1].astype(int)
+		self.A = self.yields[:,1].astype(int)
+		self.Z = self.yields[:,0].astype(int)
 		self.N = self.A - self.Z
-		self.U = self.yields[:,2].astype(np.float64)
-		self.J = self.yields[:,3].astype(np.float64)
-		self.P = self.yields[:,4].astype(int)
-		self.KE = self.yields[:,5].astype(np.float64)
+		self.U = self.yields[:,3].astype(np.float64)
+		self.J = self.yields[:,4].astype(np.float64)
+		self.P = self.yields[:,5].astype(int)
+		self.KE = self.yields[:,2].astype(np.float64)
 		
 		# fragment momenta
 		pfx = self.yields[:,6].astype(np.float64)
@@ -114,47 +114,15 @@ class Yields:
 			hasMaxNumber = True
 		else:
 			hasMaxNumber = False
-
-		A = [] #-- fragment masses
-		Z = [] #-- fragment charges
-		KE = [] #-- fragment kinetic energy
-		U = [] #-- fragment excitation energy
-		J = [] #-- fragment spin
-		P = [] #-- fragment parity
-		preFragmentsX = [] #-- x-momentum vector
-		preFragmentsY = [] #-- y-momentum vector
-		preFragmentsZ = [] #-- z-momentum vector
-
-		c=0
-		while True:
-			c+=1
-			if (hasMaxNumber and c>maxNumberEvents):
-				break
-			line = f.readline()
-			if (len(line)==0):
-				break
-
-			line = line.split()
-			Z.append(int(line[0]))
-			A.append(int(line[1]))
-			KE.append(float(line[2]))
-			U.append(float(line[3]))
-			J.append(float(line[4]))
-			P.append(int(line[5]))
-			preFragmentsX.append(float(line[6]))
-			preFragmentsY.append(float(line[7]))
-			preFragmentsZ.append(float(line[8]))
 			
-		f.close()
-
-		data = np.dstack((A,Z,U,J,P,KE,preFragmentsX,preFragmentsY,preFragmentsZ))
-
-		data = data[0,:,:]
+		data = np.loadtxt(filename)
+		if (hasMaxNumber):
+			data = data[:maxNumberEvents]
 
 		return (data)
 
 	#################################################################
-	#-- get all of the variables - instead of direct access		#
+	#-- get all of the variables - instead of direct access	  #
 	#################################################################
 
 	def getFissionYields(self):

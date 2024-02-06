@@ -1,7 +1,7 @@
 CGMF, Cascading Gamma-ray Multiplicity and Fission
 ==================================================
 
-Updated on Sept. 24, 2021
+Updated on Feb. 5, 2024
 
 ---
 Authors
@@ -44,7 +44,7 @@ Documentation
 Version
 -------
 
-### Current Version 1.1.0
+### Current Version 1.1.X
 
 - Open source, BSD-3
 - Copyright: Triad National Security, LLC. All rights reserved.
@@ -74,9 +74,9 @@ Building, Testing and Installing Instructions
 7) Installing: type `make install` to install CGMF
     * This creates the following directory structure in the CMAKE_INSTALL_PREFIX directory:
         * bin/ [contains cgmf executable]
-        * include/cgmf-1.1.0 [contains cgmf header files]
-        * lib/cgmf-1.1.0 [contains libcgmf library]
-        * share/data/cgmf-1.1.0 [contains cgmf data files]
+        * include/cgmf-1.1.X [contains cgmf header files]
+        * lib/cgmf-1.1.X [contains libcgmf library]
+        * share/data/cgmf-1.1.X [contains cgmf data files]
 
 Example configuration in release mode with build, test and install:
 * `cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -Dcgmf.x.MPI=ON ..`
