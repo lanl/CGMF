@@ -7,7 +7,7 @@ The CGMF Code
 .. admonition:: Recommended publication for citing
    :class: tip
 
-   Patrick Talou, Ionel Stetcu, Patrick Jaffke, Michael E. Rising, Amy E. Lovell, and Toshihiko Kawano, "Fission Fragment Decay Simulations with the CGMF Code," to be submitted to Comp. Phys. Comm. (2020).
+   Patrick Talou, Ionel Stetcu, Patrick Jaffke, Michael E. Rising, Amy E. Lovell, and Toshihiko Kawano, "Fission Fragment Decay Simulations with the CGMF Code," `Link Computer Physics Communications 269 (2021) 108087 <https://doi.org/10.1016/j.cpc.2021.108087>`_.
 
 .. admonition:: Support
 
