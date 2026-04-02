@@ -11,7 +11,7 @@ The CGMF Code
 
 .. admonition:: Support
 
-   For any questions related to :program:`CGMF`, its use, and its code source, please email us at: :email:`cgmf-help@lanl.gov <cgmf-help@lanl.gov>`.
+   For any questions related to :program:`CGMF`, its use, and its code source, please email us at: `cgmf-help@lanl.gov <cgmf-help@lanl.gov>`.
 
 .. only:: html
 

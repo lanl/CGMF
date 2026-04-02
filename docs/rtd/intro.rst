@@ -38,5 +38,5 @@ Initially written in FORTRAN 95, significant parts of :program:`FFD` were re-wri
 For more information
 =====================
 
-This online user manual is intended to become the main reference for :program:`CGMF`. The main reference to cite :program:`CGMF` is its official documentation published as `Talou, Stetcu, Jaffke, Rising, Lovell and Kawano, submitted to Comp. Phys. Comm. (2020) <>`_. In addition, several :ref:`publications` and presentations might be of interest to the reader wanting more information on how the code is actually used for practical studies. 
+This online user manual is intended to become the main reference for :program:`CGMF`. The main reference to cite :program:`CGMF` is its official documentation published as `Talou, Stetcu, Jaffke, Rising, Lovell and Kawano, submitted to Comp. Phys. Comm. (2020) [citation]`_. In addition, several :ref:`publications` and presentations might be of interest to the reader wanting more information on how the code is actually used for practical studies. 
 

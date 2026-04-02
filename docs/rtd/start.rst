@@ -79,7 +79,7 @@ which means that CGMF is run for the spontaneous fission (incident energy is set
      - fission histories results file ("results.cgmf" is default)
 
 
-The CGMF run above would create a history file (`histories.cgmf') as well as a concise summary of important average quantities on the console, such as:
+The CGMF run above would create a history file (histories.cgmf) as well as a concise summary of important average quantities on the console, such as:
 
 .. code-block:: console
 
