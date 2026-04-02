@@ -1,3 +1,4 @@
 jupyter
 nbsphinx
 sphinx-numfig
+sphinx-rtd-theme
